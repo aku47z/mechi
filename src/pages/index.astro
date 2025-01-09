@@ -1,11 +1,43 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Navbar from '../components/Navbar.astro';
+import Card from '../components/Card.astro';
+import img1 from '../assets/DSC04695.jpg';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Mechi Carpets | Home">
+	<Navbar />
+	<section id="whymechi">
+		<h2>Why Mechi<br>Surshar Carpets?</h2>
+		<div id="cards">
+			<Card image={img1} title="Innovative Colors" description="With decades of experience in the rug industry and through years of meticulous selection of dyed yarn colors, we are able to provide a host of vibrant in-house colors as well as options for standard ARS1400 color selection box and custom colors. " />
+			<Card image={img1} title="Interactive Client Care" description="We place much importance to illustrate our client's vision into reality and work to provide the best solutions and service."/>
+			<Card image={img1} title="Fully Customizable" description="Our rugs are fully customizable Incorporating the resilient nature of the traditional Tibetan knotted technique and the supple method of hand tufting." />
+		</div> 	
+	</section>
 </Layout>
+
+<style>
+	h2 {
+		color: #1B1B1C;
+		text-align: center;
+		font-family: 'Gelasio', serif;
+		font-size: 4.8rem;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 120%;
+		letter-spacing: -0.04rem;
+	}
+	#whymechi {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 6rem;
+		padding: 5rem 4rem;
+	}
+	#cards {
+		display: flex;
+		flex-wrap: wrap;
+	}
+</style>
