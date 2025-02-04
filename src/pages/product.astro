@@ -1,10 +1,113 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Button from "../components/Button.astro";
+import Products from "../components/Products.astro";
 
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
+import alpine1 from "../assets/Product/alpine1.png";
+import alpine2 from "../assets/Product/alpine2.png";
+import canyon1 from "../assets/Product/canyon1.png";
+import canyon2 from "../assets/Product/canyon2.png";
+import dune1 from "../assets/Product/dune1.png";
+import dune2 from "../assets/Product/dune2.png";
+import festive1 from "../assets/Product/festive1.png";
+import festive2 from "../assets/Product/festive2.png";
+import marina1 from "../assets/Product/marina1.png";
+import marina2 from "../assets/Product/marina2.png";
+import yosemite1 from "../assets/Product/yosemite1.png";
+import yosemite2 from "../assets/Product/yosemite2.png";
+import yosemite from "../assets/Product/yosemite.png";
 
+const products = [
+  {
+    img1: festive1,
+    img2: festive2,
+    title: "Festive",
+    text: "Inspired by the vibrant spirit of a carnival, this design bursts with bold swirls of red, blue, yellow, and green, evoking energy and joy.\n\nPerfect for adding a touch of excitement and creativity to your home.",
+    materials: "100 Knot Quality\n100% New Zealand Wool\nHand knotted",
+  },
+  {
+    img1: dune1,
+    img2: dune2,
+    title: "Dune",
+    text: "This carpet captures the serene and flowing contours of desert dunes. The design brings a sense of natural harmony and understated elegance to your space, this design captures the essence of tranquility found in vast desert landscapes.",
+    materials: "100 Knot Quality\n100% New Zealand Wool\nHand knotted",
+  },
+  {
+    img1: marina1,
+    img2: marina2,
+    title: "Marina",
+    text: "The design mirrors the depth and flow of ocean waves, while the unique contours add a touch of fluidity. It evokes the essence of tranquil waters through its layered blue gradients.\n\nAn ideal choice to bring a sense of calm and relaxation into your space.",
+    materials: "100 Knot Quality\n100% New Zealand Wool\nHand knotted",
+  },
+  {
+    img1: canyon1,
+    img2: canyon2,
+    title: "Canyon",
+    text: "Perfect for creating a grounded and organic feel in your space, this design brings the timeless essence of nature indoors.\n\nThe grandeur of natural canyons and its warm earth tones are mirrored harmoniously in the rug.",
+    materials: "100 Knot Quality\n100% New Zealand Wool\nHand knotted",
+  },
+  {
+    img1: yosemite1,
+    img2: yosemite2,
+    title: "Yosemite",
+    text: "Reflecting the iconic landscapes and earthy tones from the Yosemite, the carpet evokes a sense of timeless wonder.\n\nThe gradient and textures bring to life the rugged cliffs and serene valleys of this majestic national park.",
+    materials:
+      "100 Knot Quality\n1 ply Hand Crafted Tibetan wool\nHand knotted",
+  },
+  {
+    img1: alpine1,
+    img2: alpine2,
+    title: "Alpine",
+    text: "The carpet captures the essence of alpine serenity, with subtle hues and textures reminiscent of snow-capped peaks and tranquil forests.\n\nIts soothing color palette and organic design invite a sense of calm to your space.",
+    materials: "100 Knot Quality\nNatural dye Tibetan wool\nHand knotted",
+  },
+];
 ---
 
 <Layout title="Product">
-	<Navbar />
+  <Navbar />
+  <div id="container">
+    <h3>
+      WELCOME TO OUR PRODUCT<br />
+      COLLECTION, DEFINED BY TRADITION<br />
+      AND DESIGNED FOR MODERN GRACE.
+    </h3>
+    <p>All our rugs are fully customizable in shape size and color.</p>
+
+    {products.map((product) => <Products {...product} />)}
+
+    <div id="request">
+      <Button link="/request" text="Request sample" color="#1b1b1c" />
+    </div>
+  </div>
 </Layout>
+
+<style>
+  #container {
+    padding: 0 7.5rem;
+    border-top: 1px solid #1b1b1c;
+  }
+
+  h3 {
+    margin-top: 8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    color: #656569;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 1.5rem */
+    letter-spacing: 0.00625rem;
+  }
+
+  #request {
+    min-height: 13.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+const { text, link, color } = Astro.props;
+---
+
+<a href={link} class="button">
+  {text}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="54"
+    height="55"
+    viewBox="0 0 49 48"
+    fill="none"
+  >
+    <circle cx="24.5" cy="24" r="23.5" stroke={color}></circle>
+    <path
+      d="M31.8646 17.636C31.8646 17.0837 31.4169 16.636 30.8646 16.636L21.8646 16.636C21.3124 16.636 20.8646 17.0837 20.8646 17.636C20.8646 18.1883 21.3124 18.636 21.8646 18.636L29.8646 18.636L29.8646 26.636C29.8646 27.1883 30.3124 27.636 30.8646 27.636C31.4169 27.636 31.8646 27.1883 31.8646 26.636L31.8646 17.636ZM18.8438 31.0711L31.5717 18.3431L30.1575 16.9289L17.4296 29.6568L18.8438 31.0711Z"
+      fill={color}></path>
+  </svg>
+</a>
+
+<style define:vars={{ color }}>
+  a {
+    /* box style */
+    border-radius: 5rem;
+    border: 1px solid #bababa;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    padding: 0.825rem 0.875rem 1rem 1.625rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1.125rem;
+    /* text style */
+    color: var(--color);
+    font-family: "General Sans", sans-serif;
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.005rem;
+    text-decoration: none;
+  }
+</style>

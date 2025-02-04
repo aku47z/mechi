@@ -1,10 +1,139 @@
 ---
-
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import ProcessCarousel from "../components/ProcessCarousel.astro";
+import Button from "../components/Button.astro";
+import { Image } from "astro:assets";
+import process6 from "../assets/Process/process6.png";
 ---
 
 <Layout title="Process">
-	<Navbar />
+  <Navbar />
+
+  <section>
+    <div id="container">
+      <article id="article-one">
+        <h3 style="max-width: 45rem;">
+          THE HERITAGE OF TIBETAN CRAFTSMANSHIP: OUR RUGS TELL A STORY
+        </h3>
+        <p id="sub-heading">
+          Discover the story woven into every rug, and let one of our
+          hand-knotted Tibetan rugs bring timeless elegance to your space.
+        </p>
+
+        <div id="paragraph">
+          <p>
+            At Mechi Surshar Carpet Industries, we take pride in the timeless
+            tradition of hand-knotting Tibetan rugs, creating masterpieces that
+            blend centuries-old craftsmanship with modern elegance. Our journey
+            began with a deep respect for the artistry and skill that has been
+            passed down through generations of Tibetan artisans. Each rug we
+            offer is not just a piece of home décor but a testament to the
+            dedication and passion of the artisans who pour their hearts into
+            every knot.<br />
+            <br />
+            The process of creating our hand-knotted Tibetan rugs is meticulous and
+            labor-intensive. Using the finest natural materials such as wool and
+            silk, each rug is crafted with care and precision.
+          </p>
+          <p>
+            The intricate knots are tied one by one, ensuring that every pattern
+            and design tells a unique story. With colors inspired by the natural
+            beauty of the Tibetan landscape and patterns that reflect cultural
+            symbolism, our rugs are both a work of art and a functional
+            treasure.<br />
+            <br />
+            We are committed to preserving the authenticity and integrity of the
+            Tibetan rug-making tradition, supporting local communities, and providing
+            a sustainable and ethical source for these exquisite pieces. From the
+            hands of skilled artisans to your home, our rugs bring warmth, beauty,
+            and a piece of Tibetan heritage into your life.
+          </p>
+        </div>
+      </article>
+
+      <ProcessCarousel />
+    </div>
+    <Button link="/product" text="See our work" color="#1b1b1c" />
+  </section>
+
+  <article id="article-two">
+    <p style="margin-bottom: 1.5rem;">The Craftsmanship</p>
+    <h3 class="article-two-text">
+      AT THE HEART OF EVERY RUG ARE THE ARTISANS BEHIND THE CRAFT
+    </h3>
+    <Image
+      src={process6}
+      alt="Process"
+      height={590}
+      style="margin-top: 2.75rem; margin-bottom: 4rem;"
+    />
+    <p class="article-two-text">
+      We are deeply committed to supporting our artisans and their communities.
+      By preserving this age-old craft and providing sustainable livelihoods, we
+      honor the rich traditions of weaving while empowering the skilled hands
+      that make it all possible.<br />
+      <br />
+      Our rugs are more than just décor—they carry the stories, dreams, and artistry
+      of the individuals who craft them. When you bring one of our creations into
+      your home, you celebrate not only the beauty of the rug but also the spirit
+      and dedication of the artisans behind it.
+    </p>
+  </article>
 </Layout>
+
+<style>
+  section {
+    border-top: 1px solid #1b1b1c;
+    display: flex;
+    flex-direction: column;
+    gap: 4.8rem;
+    padding: 7rem 5.4rem;
+  }
+
+  #container {
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+
+  #sub-heading {
+    color: #1b1b1c;
+    font-size: 1.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: -0.0175rem;
+  }
+
+  #article-one {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 52rem;
+  }
+
+  #paragraph {
+    display: flex;
+    gap: 2.4rem;
+  }
+
+  p {
+    flex: 1;
+  }
+
+  #article-two {
+    background-color: #fffdfd;
+    margin: 7.75rem 6.5rem;
+    padding-top: 3.5rem;
+    padding-bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .article-two-text {
+    max-width: 56rem;
+  }
+</style>

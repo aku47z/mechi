@@ -1,43 +1,291 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Card from '../components/Card.astro';
-import img1 from '../assets/DSC04695.jpg';
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Card from "../components/Card.astro";
+import Button from "../components/Button.astro";
+import { Image } from "astro:assets";
+import home2 from "../assets/Homepage/Home 2.png";
+import home5 from "../assets/Homepage/Home 5.png";
+import home6 from "../assets/Homepage/Home 6.png";
+import home8 from "../assets/Homepage/Home 8.png";
+import home9 from "../assets/Homepage/Home 9.png";
+import LegacyCarousel from "../components/LegacyCarousel.astro";
 ---
 
 <Layout title="Mechi Carpets | Home">
-	<Navbar />
-	<section id="whymechi">
-		<h2>Why Mechi<br>Surshar Carpets?</h2>
-		<div id="cards">
-			<Card image={img1} title="Innovative Colors" description="With decades of experience in the rug industry and through years of meticulous selection of dyed yarn colors, we are able to provide a host of vibrant in-house colors as well as options for standard ARS1400 color selection box and custom colors. " />
-			<Card image={img1} title="Interactive Client Care" description="We place much importance to illustrate our client's vision into reality and work to provide the best solutions and service."/>
-			<Card image={img1} title="Fully Customizable" description="Our rugs are fully customizable Incorporating the resilient nature of the traditional Tibetan knotted technique and the supple method of hand tufting." />
-		</div> 	
-	</section>
+  <header>
+    <Navbar theme="dark" />
+    <div id="hero">
+      <h1 id="hero-1">For the finest</h1>
+      <h1 id="hero-2">TIBETAN<br />HANDICRAFTED<br />CARPETS</h1>
+      <h3 id="hero-3">
+        With every rug,<br />
+        we honor the enduring tradition of Tibetan craftsmanship, preserving its
+        essence for generations to come.
+      </h3>
+    </div>
+  </header>
+
+  <section class="one-two">
+    <div>
+      <h2>LEGACY</h2>
+      <p id="legacy-year">since 1978</p>
+    </div>
+    <p id="legacy-description">
+      Our legacy is woven into every strand of wool and silk, reflecting a
+      commitment to the finest materials, intricate patterns, and rich textures.
+      Let us enrich your home with unmatched quality, artistry, and timeless
+      elegance.
+    </p>
+    <div id="legacy-images">
+      <div class="image-wrapper side-image">
+        <Image
+          src={home2}
+          alt="Craftsmanship detail"
+          class="responsive-image"
+        />
+      </div>
+      <div class="image-wrapper carousel-image">
+        <LegacyCarousel />
+      </div>
+      <div class="image-wrapper side-image">
+        <Image
+          src={home6}
+          alt="Craftsmanship detail"
+          class="responsive-image"
+        />
+      </div>
+    </div>
+    <Button link="/product" text="Explore our products" color="#1b1b1c" />
+  </section>
+
+  <section class="one-two" style="background-color: #FFFDFD;">
+    <h2>WHY MECHI<br />SURSHAR CARPETS?</h2>
+    <div id="cards">
+      <Card
+        image={home5}
+        title="Innovative Colors"
+        description="With decades of experience in the rug industry and through years of meticulous selection of dyed yarn colors, we are able to provide a host of vibrant in-house colors as well as options for standard ARS1400 color selection box and custom colors. "
+      />
+      <Card
+        image={home8}
+        title="Interactive Client Care"
+        description="We place much importance to illustrate our client's vision into reality and work to provide the best solutions and service."
+      />
+      <Card
+        image={home9}
+        title="Fully Customizable"
+        description="Our rugs are fully customizable Incorporating the resilient nature of the traditional Tibetan knotted technique and the supple method of hand tufting."
+      />
+    </div>
+    <Button link="/contact" text="Contact us" color="#1b1b1c" />
+  </section>
+
+  <section id="story">
+    <div id="story-title">
+      <h2 style="text-align: left;">THE STORY OF OUR HANDMADE RUGS</h2>
+      <Button link="/about" text="Learn more about us" color="#1b1b1c" />
+    </div>
+    <p id="story-description">
+      The process of creating our hand-knotted Tibetan rugs is meticulous and
+      labor-intensive. Using the finest natural materials such as wool and silk,
+      each rug is crafted with care and precision. The intricate knots are tied
+      one by one, ensuring that every pattern and design tells a unique story.
+      With colors inspired by the natural beauty of the Tibetan landscape and
+      patterns that reflect cultural symbolism, our rugs are both a work of art
+      and a functional treasure.<br />
+      <br />
+      We are committed to preserving the authenticity and integrity of the Tibetan
+      rug-making tradition, supporting local communities, and providing a sustainable
+      and ethical source for these exquisite pieces. From the hands of skilled artisans
+      to your home, our rugs bring warmth, beauty, and a piece of Tibetan heritage
+      into your life.<br />
+      Discover the story woven into every rug, and let one of our hand-knotted Tibetan
+      rugs bring timeless elegance to your space.
+    </p>
+  </section>
+
+  <section id="elevate">
+    <h2 style="color: white">ELEVATE YOUR SPACE<br />WITH OUR CARPETS</h2>
+    <Button link="/product" text="View our collection" color="#ffffff" />
+  </section>
 </Layout>
 
 <style>
-	h2 {
-		color: #1B1B1C;
-		text-align: center;
-		font-family: 'Gelasio', serif;
-		font-size: 4.8rem;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 120%;
-		letter-spacing: -0.04rem;
-	}
-	#whymechi {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		gap: 6rem;
-		padding: 5rem 4rem;
-	}
-	#cards {
-		display: flex;
-		flex-wrap: wrap;
-	}
+  header {
+    background: linear-gradient(
+        180deg,
+        #191919 -4.4%,
+        rgba(25, 25, 25, 0.05) 55.33%,
+        rgba(25, 25, 25, 0) 70.78%
+      ),
+      url("src/assets/Homepage/Home 1.png");
+    background-size: cover;
+    background-position: center;
+    height: 1910px;
+    width: auto;
+  }
+
+  #hero {
+    margin-top: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    font-style: normal;
+    text-align: center;
+  }
+
+  #hero-1 {
+    font-weight: 300;
+    font-size: 2rem;
+    line-height: 150%; /* 3rem */
+    letter-spacing: -0.06rem;
+  }
+
+  #hero-2 {
+    font-weight: 300;
+    font-size: 6.25rem;
+    line-height: 100%; /* 5.75rem */
+    letter-spacing: -0.2875rem;
+  }
+
+  #hero-3 {
+    border-radius: 50%;
+    margin-top: 600px;
+    background: radial-gradient(rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0) 85%);
+    padding: 2rem;
+    width: 60rem;
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    line-height: 100%; /* 3rem */
+    letter-spacing: -0.06rem;
+  }
+
+  .one-two {
+    padding: 5.75rem;
+    padding-top: 3.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 3.6rem;
+  }
+
+  #cards {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #legacy-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #1b1b1c;
+  }
+
+  #legacy-year {
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 160%;
+    letter-spacing: 0.0075rem;
+  }
+
+  #legacy-description {
+    max-width: 68rem;
+  }
+
+  #legacy-images {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* gap: 80px; */
+    width: 100%;
+  }
+
+  .image-wrapper {
+    flex-shrink: 1;
+  }
+
+  /* Side items take less space */
+  .side-image {
+    flex: 1 1 22.5%;
+    max-width: 22.5%;
+    min-width: 180px;
+  }
+
+  /* Carousel in the middle takes more space */
+  .carousel-image {
+    flex: 1 1 30%;
+    max-width: 30%;
+    min-width: 200px;
+  }
+
+  .responsive-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  #story {
+    padding: 7.8125rem 9.375rem 9.5rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  #story-title {
+    min-width: 40rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  #story-description {
+    max-width: 41.5rem;
+  }
+
+  #elevate {
+    background: linear-gradient(
+        -7deg,
+        rgba(0, 0, 0, 0.81) -0.57%,
+        rgba(0, 0, 0, 0) 75.89%
+      ),
+      url("src/assets/homepage/Home 10.png");
+    background-size: cover;
+    background-position: center;
+    height: 808px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 88px;
+  }
+
+  /* Optional: Adjust spacing or sizes on smaller screens */
+  @media (max-width: 768px) {
+    .one-two {
+      padding: 2.5rem;
+    }
+
+    #legacy-images {
+      gap: 0.5rem;
+    }
+    .side-image,
+    .carousel-image {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+  }
 </style>

@@ -1,100 +1,104 @@
 ---
 import { Image } from "astro:assets";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 ---
+
 <footer>
-    <div id="info">
-        <Image src={logo} alt="logo" width="230" height="230" />
-        <div id="sub-info">
-            <div>
-                <h4>Address:</h4>
-                <p>Boudha, Tushal</p>
-                <p>Kathmandu, Nepal</p>
-            </div>
-            <div>
-                <h4>Contact:</h4>
-                <p>Tel: (+9771) 447 0360 (Nepal)</p>
-                <p>Cell: (+1) 510 588 0895 (USA)</p>
-                <p>Cell: (+977) 9818167893 (Nepal)</p>
-                <p>Email: mingur@mechicarpet.com</p>
-            </div>
-        </div>
-        <ul id="links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/product">Product</a></li>
-            <li><a href="/process">Process</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
-    </div>
-    <hr style="margin-top: 3rem;"/>
-    <div id="credits">
-        <p>© 2025 Mechi Surshsar Carpets. All right reserved.</p>
-        <p>Designed by <a href="https://www.linkedin.com/in/suneha-shrestha-1a730b243/">The Doodle Studio</a></p>
-    </div>
+  <Image src={logo} alt="logo" height={310} style="align-self: center;" />
+  <div id="sub-info">
+    <h5>Address:</h5>
+    <p>
+      Boudha, Tushal<br />
+      Kathmandu, Nepal
+    </p>
+    <h5><br />Contact:</h5>
+    <p class="sub-heading">Office :</p>
+    <p>(+9771) 457 0360 (Nepal)</p>
+    <p class="sub-heading">
+      For Sales :<p></p>
+      <p>
+        (+977) 9818167893 (Nepal)<br />
+        (+1) 510 588 0895 (USA)
+      </p>
+      <p class="sub-heading">
+        <br />All Sales:<p></p>
+        <p><span class="sub-heading">Email:</span> mingur@mechicarpet.com</p>
+      </p>
+    </p>
+  </div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/product">Product</a></li>
+    <li><a href="/process">Process</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+  <div id="credits">
+    <p>© 2025 Mechi Surshar Carpets. <br />All right reserved.</p>
+    <p>
+      <br />Designed by
+      <a
+        href="https://www.linkedin.com/in/suneha-shrestha-1a730b243/"
+        style="font-weight: 400;"
+      >
+        The Doodle Studio
+      </a>
+    </p>
+  </div>
 </footer>
 
 <style>
-    footer {
-        background-color: #FFFDFD;
-        color: black;
-        padding: 4.8rem 6rem;
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    #info {
-        display: flex;
-        gap: 4.8rem;
-        justify-content: space-evenly;
-        font-family: 'General Sans', sans-serif;
-        flex-wrap: wrap;
-    }
-
-    #sub-info {
-        display: flex;
-        flex: auto;
-        flex-direction: column;
-        gap: 1.8rem;
-        align-items: flex-start;
-        font-size: 1rem;
-        line-height: 150%;
-        letter-spacing: -0.0195rem;
-    }
-
-    h4, ul {
-        font-weight: 600;
-    }
-
-    p {
-        font-weight: 400;
-    }
-
-    ul {
-        list-style-type: none;
-        text-decoration: none;
-        display: flex;
-        flex: auto;
-        flex-direction: column;
-        gap: 0.9rem;
-        justify-content: flex-start;
-        font-size: 1rem;
-    }
-
-    a {
-        text-decoration: none;
-        color: black;
-    }
-
-    #credits {
-        font-family: 'General Sans', sans-serif;
-        font-size: 1rem;
-        line-height: 150%;
-        letter-spacing: -0.0195rem;
-        display: flex;
-        justify-content: space-between;
-        gap: 3rem;
-        flex-wrap: wrap;
-    }
+  footer {
+    background: #fffdfd;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 6rem 4rem 6rem 0;
+    gap: 2rem;
+    font-family: "General Sans", sans-serif;
+    color: #1b1b1c;
+    flex-wrap: wrap;
+  }
+  #sub-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 16rem;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    max-width: 12.5rem;
+  }
+  li {
+    list-style: none;
+  }
+  h5 {
+    color: #1b1b1c;
+    font-size: 1.1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 150%; /* 1.5rem */
+    letter-spacing: -0.02rem;
+  }
+  a,
+  p {
+    text-decoration: none;
+    color: #1b1b1c;
+    font-size: 0.95rem;
+    font-style: normal;
+    line-height: 180%;
+    letter-spacing: 0.00438rem;
+  }
+  p {
+    font-weight: 400;
+  }
+  a,
+  .sub-heading {
+    font-weight: 600;
+  }
+  #credits {
+    min-width: 14rem;
+  }
 </style>

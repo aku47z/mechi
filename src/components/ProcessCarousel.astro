@@ -1,0 +1,128 @@
+---
+import { Image } from "astro:assets";
+import process1 from "../assets/Process/process1.png";
+import process2 from "../assets/Process/process2.png";
+import process3 from "../assets/Process/process3.png";
+import process5 from "../assets/Process/process5.png";
+
+const images = [process1, process2, process3, process5];
+const n = images.length;
+---
+
+<div>
+  <div id="carousel">
+    {
+      images.map((img, index) => (
+        <Image
+          class="slide"
+          src={img}
+          alt={`Process image ${index + 1}`}
+          height={700}
+        />
+      ))
+    }
+  </div>
+
+  <div id="dots-container">
+    {
+      Array.from({ length: n }).map((_, index) => (
+        <div class="dot" data-index={index} />
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Carousel container */
+  #carousel {
+    position: relative;
+    height: 810px;
+    width: 565px;
+    padding: 3rem;
+    background-color: white;
+    overflow: hidden;
+  }
+
+  /* All slides are stacked, with a fade-in/out transition */
+  .slide {
+    position: absolute;
+    top: 3.5rem;
+    right: 3rem;
+    opacity: 0;
+    transition: opacity 1500ms ease-in-out;
+  }
+
+  /* Only the active slide is visible */
+  .slide.active {
+    opacity: 1;
+  }
+
+  #dots-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  /* Dots styling */
+  .dot {
+    background-color: #c9c9c9;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .dot.active {
+    background-color: #9b9b9b;
+    transition: 1s ease;
+  }
+</style>
+
+<script>
+  // Wait until DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll(".dot");
+    let currentIndex = 0;
+    let timer: number;
+
+    // Function to display a slide (and update the corresponding dot)
+    function showSlide(index: number) {
+      slides.forEach((slide) => slide.classList.remove("active"));
+      dots.forEach((dot) => dot.classList.remove("active"));
+      slides[index].classList.add("active");
+      dots[index].classList.add("active");
+      currentIndex = index;
+    }
+
+    // Advance to the next slide
+    function nextSlide() {
+      const nextIndex = (currentIndex + 1) % slides.length;
+      showSlide(nextIndex);
+    }
+
+    // Start or restart the timer for auto-advancing slides
+    function startTimer() {
+      timer = setInterval(nextSlide, 2500);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      startTimer();
+    }
+
+    // Initialize the slideshow
+    showSlide(0);
+    startTimer();
+
+    // Add click events to the dots for manual slide selection
+    dots.forEach((dot) => {
+      dot.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement;
+        const index = parseInt(target.getAttribute("data-index") || "0", 10);
+        showSlide(index);
+        resetTimer();
+      });
+    });
+  });
+</script>

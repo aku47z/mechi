@@ -1,10 +1,71 @@
 ---
-
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import { Image } from "astro:assets";
+import about2 from "../assets/About/about2.png";
+import about3 from "../assets/About/about3.png";
 ---
 
 <Layout title="About">
-	<Navbar />
+  <header>
+    <Navbar theme="dark" />
+  </header>
+
+  <section>
+    <h2>OUR STORY</h2>
+    <p>
+      Founded in 1978, Mechi Surshar Carpet started off with a small store in
+      Thamel, Kathmandu during the heights of the flower revolution. Since then,
+      this family owned business has produced thousands of square meters of
+      expertly handknotted rugs. Mechi’s rugs can be traced to a wide variety of
+      clients all over the world.
+    </p>
+    <div id="#images">
+      <Image src={about2} alt="Mechi Surshar Carpets Founders" height={350} />
+      <Image src={about3} alt="Mechi Surshar Carpets Founders" height={350} />
+    </div>
+    <h2>THE FOUNDATION</h2>
+    <p>
+      The company’s founder Namgyal and his American importer and long time
+      friend Steve met in Kathmandu in the 70’s. Even in the early days, they
+      were quickly able to recognize the fine quality and craftsmanship of
+      Tibetan rugs which had been introduced by Tibetan exiles in the 60’s.
+      Steve with inspiration of the Arts and craft movement was able to
+      revolutionize the traditional Tibetan rugs by incorporating modern designs
+      into the rugs which were mostly traditional Tibetan motifs. Today, we see
+      their passion reflect on the looms with the production of exceptional rug
+      designs coupled with expert craftsmanship.
+    </p>
+  </section>
 </Layout>
+
+<style>
+  header {
+    background: url("src/assets/About/about1.png");
+    background-size: cover;
+    background-position: center;
+    height: 1360px;
+    width: auto;
+  }
+
+  p {
+    text-align: center;
+  }
+
+  section {
+    margin: 10rem auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4.175rem;
+    max-width: min-content;
+  }
+
+  div {
+    background-color: #fff;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+  }
+</style>
