@@ -3,17 +3,23 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Card from "../components/Card.astro";
 import Button from "../components/Button.astro";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import home1 from "../assets/Homepage/Home 1.png";
 import home2 from "../assets/Homepage/Home 2.png";
 import home5 from "../assets/Homepage/Home 5.png";
 import home6 from "../assets/Homepage/Home 6.png";
 import home8 from "../assets/Homepage/Home 8.png";
 import home9 from "../assets/Homepage/Home 9.png";
+import home10 from "../assets/Homepage/Home 10.png";
 import LegacyCarousel from "../components/LegacyCarousel.astro";
+const hero = await getImage({ src: home1 });
+const elevate = await getImage({ src: home10 });
 ---
 
 <Layout title="Mechi Carpets | Home">
-  <header>
+  <header
+    style={`background: linear-gradient(180deg, #191919 -4.4%, rgba(25, 25, 25, 0.05) 55.33%, rgba(25, 25, 25, 0) 70.78%), center url('${hero.src}'); background-size: cover;`}
+  >
     <Navbar theme="dark" />
     <div id="hero">
       <h1 id="hero-1">For the finest</h1>
@@ -105,23 +111,20 @@ import LegacyCarousel from "../components/LegacyCarousel.astro";
     </p>
   </section>
 
-  <section id="elevate">
-    <h2 style="color: white">ELEVATE YOUR SPACE<br />WITH OUR CARPETS</h2>
+  <section
+    id="elevate"
+    style={`background: linear-gradient(-7deg, rgba(0, 0, 0, 0.81) -0.57%, rgba(0, 0, 0, 0) 75.89%), center url('${elevate.src}'); background-size: cover;`}
+  >
+    <h2 style="color: white">
+      ELEVATE YOUR SPACE<br />
+      WITH OUR CARPETS
+    </h2>
     <Button link="/product" text="View our collection" color="#ffffff" />
   </section>
 </Layout>
 
 <style>
   header {
-    background: linear-gradient(
-        180deg,
-        #191919 -4.4%,
-        rgba(25, 25, 25, 0.05) 55.33%,
-        rgba(25, 25, 25, 0) 70.78%
-      ),
-      url("src/assets/Homepage/Home 1.png");
-    background-size: cover;
-    background-position: center;
     height: 1910px;
     width: auto;
   }
@@ -206,7 +209,6 @@ import LegacyCarousel from "../components/LegacyCarousel.astro";
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    /* gap: 80px; */
     width: 100%;
   }
 
@@ -255,14 +257,6 @@ import LegacyCarousel from "../components/LegacyCarousel.astro";
   }
 
   #elevate {
-    background: linear-gradient(
-        -7deg,
-        rgba(0, 0, 0, 0.81) -0.57%,
-        rgba(0, 0, 0, 0) 75.89%
-      ),
-      url("src/assets/homepage/Home 10.png");
-    background-size: cover;
-    background-position: center;
     height: 808px;
     width: auto;
     display: flex;
