@@ -1,13 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import about1 from "../assets/About/about1.png";
 import about2 from "../assets/About/about2.png";
 import about3 from "../assets/About/about3.png";
+
+const aboutBackground = await getImage({ src: about1 });
 ---
 
 <Layout title="About">
-  <header>
+  <header style={`background-image: url('${aboutBackground.src}')`}>
     <Navbar theme="dark" />
   </header>
 
@@ -41,7 +44,6 @@ import about3 from "../assets/About/about3.png";
 
 <style>
   header {
-    background: url("src/assets/About/about1.png");
     background-size: cover;
     background-position: center;
     height: 1360px;
