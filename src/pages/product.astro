@@ -16,7 +16,6 @@ import marina1 from "../assets/Product/marina1.png";
 import marina2 from "../assets/Product/marina2.png";
 import yosemite1 from "../assets/Product/yosemite1.png";
 import yosemite2 from "../assets/Product/yosemite2.png";
-import yosemite from "../assets/Product/yosemite.png";
 
 const products = [
   {
@@ -69,9 +68,8 @@ const products = [
   <Navbar />
   <div id="container">
     <h3>
-      WELCOME TO OUR PRODUCT<br />
-      COLLECTION, DEFINED BY TRADITION<br />
-      AND DESIGNED FOR MODERN GRACE.
+      WELCOME TO OUR PRODUCT COLLECTION, DEFINED BY TRADITION AND DESIGNED FOR
+      MODERN GRACE.
     </h3>
     <p>All our rugs are fully customizable in shape size and color.</p>
 
@@ -90,6 +88,7 @@ const products = [
   }
 
   h3 {
+    max-width: 60rem;
     margin-top: 8rem;
     margin-bottom: 1.5rem;
   }
@@ -109,5 +108,27 @@ const products = [
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    #container {
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    h3 {
+      margin-top: 4rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    p {
+      border-bottom: 1px solid #bababa;
+      padding-bottom: 1.5rem;
+    }
+
+    #request {
+      min-height: 8rem;
+    }
   }
 </style>

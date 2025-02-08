@@ -23,9 +23,19 @@ const aboutBackground = await getImage({ src: about1 });
       expertly handknotted rugs. Mechi’s rugs can be traced to a wide variety of
       clients all over the world.
     </p>
-    <div id="#images">
-      <Image src={about2} alt="Mechi Surshar Carpets Founders" height={350} />
-      <Image src={about3} alt="Mechi Surshar Carpets Founders" height={350} />
+    <div>
+      <Image
+        src={about2}
+        alt="Mechi Surshar Carpets Founders"
+        height={350}
+        class="img"
+      />
+      <Image
+        src={about3}
+        alt="Mechi Surshar Carpets Founders"
+        height={350}
+        class="img"
+      />
     </div>
     <h2>THE FOUNDATION</h2>
     <p>
@@ -69,5 +79,35 @@ const aboutBackground = await getImage({ src: about1 });
     display: flex;
     gap: 2rem;
     padding: 2rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    header {
+      height: 70vh;
+    }
+
+    h2 {
+      font-size: 3rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    section {
+      margin: 2rem auto;
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    div {
+      flex-direction: column;
+      padding: 1rem;
+      gap: 0;
+    }
+
+    .img {
+      width: 100vw;
+    }
   }
 </style>

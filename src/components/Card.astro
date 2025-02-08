@@ -5,7 +5,7 @@ import { Image } from "astro:assets";
 
 <div>
   <!-- need to make image responsive  -->
-  <Image src={image} alt="image" width={408} height={408} />
+  <Image src={image} alt="image" class="img" />
   <h4>{title}</h4>
   <p>{description}</p>
 </div>
@@ -19,6 +19,7 @@ import { Image } from "astro:assets";
     align-items: flex-start;
     padding: 3rem 2.75rem;
     border: 1px solid #bababa;
+    text-align: left;
   }
   h4,
   p {
@@ -36,6 +37,27 @@ import { Image } from "astro:assets";
     font-weight: 300;
     font-size: 1.2rem;
     line-height: 160%;
-    text-align: left;
+  }
+
+  .img {
+    max-width: 410px;
+    height: auto;
+  }
+
+  @media screen and (max-width: 768px) {
+    div {
+      border: none;
+      border-bottom: 1px solid #bababa;
+      border-top: 1px solid #bababa;
+      padding: 2rem;
+      gap: 0.5rem;
+      text-align: center;
+      align-items: center;
+    }
+
+    .img {
+      max-width: 75vw;
+      align-self: center;
+    }
   }
 </style>

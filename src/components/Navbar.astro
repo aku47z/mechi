@@ -19,7 +19,12 @@ if (theme == "dark") {
     <a href="/product">Product</a>
   </div>
   <a href="/" id="logo">
-    <Image src={logo} alt="Mechi Surshar Carpets Logo" height={160} />
+    <Image
+      src={logo}
+      alt="Mechi Surshar Carpets Logo"
+      class="img"
+      height={160}
+    />
     <h1>MECHI SURSHAR<br />CARPET INDUSTRIES</h1>
   </a>
   <div class="tab-group">
@@ -69,4 +74,51 @@ if (theme == "dark") {
     line-height: 130%;
     text-align: center;
   }
+
+  .img {
+    height: 160px;
+  }
+
+  @media screen and (max-width: 768px) {
+    nav {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    h1 {
+      font-size: 0.6rem;
+    }
+
+    .img {
+      height: 120px;
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .tab-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Logo-less version  */
+  /* @media screen and (max-width: 768px) {
+    nav {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    h1,
+    .img {
+      display: none;
+    }
+
+    .tab-group {
+      flex: 0;
+      justify-content: space-around;
+      flex: 1;
+    }
+  } */
 </style>

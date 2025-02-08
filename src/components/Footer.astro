@@ -4,7 +4,7 @@ import logo from "../assets/logo.svg";
 ---
 
 <footer>
-  <Image src={logo} alt="logo" height={310} style="align-self: center;" />
+  <Image src={logo} alt="logo" height={310} class="img" />
   <div id="sub-info">
     <h5>Address:</h5>
     <p>
@@ -52,7 +52,7 @@ import logo from "../assets/logo.svg";
     background: #fffdfd;
     display: flex;
     justify-content: space-evenly;
-    padding: 6rem 4rem 6rem 0;
+    padding: 6rem 4rem 6rem 1rem;
     gap: 2rem;
     font-family: "General Sans", sans-serif;
     color: #1b1b1c;
@@ -100,5 +100,25 @@ import logo from "../assets/logo.svg";
   }
   #credits {
     min-width: 14rem;
+  }
+  .img {
+    align-self: center;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 768px) {
+    footer {
+      padding: 2rem;
+      flex-direction: column;
+    }
+    .img {
+      max-width: 20rem;
+    }
+    #credits {
+      border-top: 1px solid #bababa;
+      padding-top: 1rem;
+    }
   }
 </style>
