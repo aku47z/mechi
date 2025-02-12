@@ -18,6 +18,7 @@ const n = images.length;
           src={img}
           alt={`Process image ${index + 1}`}
           height={700}
+          loading={index === 0 ? "eager" : "lazy"}
         />
       ))
     }
@@ -75,6 +76,25 @@ const n = images.length;
   .dot.active {
     background-color: #9b9b9b;
     transition: 1s ease;
+  }
+
+  @media screen and (max-width: 768px) {
+    #carousel {
+      width: 90vw;
+      height: 130vw;
+    }
+
+    .slide {
+      width: 80vw;
+      height: auto;
+      top: 5vw;
+      right: 5vw;
+    }
+
+    .dot {
+      width: 0.8rem;
+      height: 0.8rem;
+    }
   }
 </style>
 

@@ -1,13 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import about1 from "../assets/About/about1.png";
 import about2 from "../assets/About/about2.png";
 import about3 from "../assets/About/about3.png";
+
+const aboutBackground = await getImage({ src: about1 });
 ---
 
 <Layout title="About">
-  <header>
+  <header style={`background-image: url('${aboutBackground.src}')`}>
     <Navbar theme="dark" />
   </header>
 
@@ -20,9 +23,19 @@ import about3 from "../assets/About/about3.png";
       expertly handknotted rugs. Mechi’s rugs can be traced to a wide variety of
       clients all over the world.
     </p>
-    <div id="#images">
-      <Image src={about2} alt="Mechi Surshar Carpets Founders" height={350} />
-      <Image src={about3} alt="Mechi Surshar Carpets Founders" height={350} />
+    <div>
+      <Image
+        src={about2}
+        alt="Mechi Surshar Carpets Founders"
+        height={350}
+        class="img"
+      />
+      <Image
+        src={about3}
+        alt="Mechi Surshar Carpets Founders"
+        height={350}
+        class="img"
+      />
     </div>
     <h2>THE FOUNDATION</h2>
     <p>
@@ -41,7 +54,6 @@ import about3 from "../assets/About/about3.png";
 
 <style>
   header {
-    background: url("src/assets/About/about1.png");
     background-size: cover;
     background-position: center;
     height: 1360px;
@@ -67,5 +79,35 @@ import about3 from "../assets/About/about3.png";
     display: flex;
     gap: 2rem;
     padding: 2rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    header {
+      height: 70vh;
+    }
+
+    h2 {
+      font-size: 3rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    section {
+      margin: 2rem auto;
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    div {
+      flex-direction: column;
+      padding: 1rem;
+      gap: 0;
+    }
+
+    .img {
+      width: 100vw;
+    }
   }
 </style>

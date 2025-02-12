@@ -13,9 +13,7 @@ import process6 from "../assets/Process/process6.png";
   <section>
     <div id="container">
       <article id="article-one">
-        <h3 style="max-width: 45rem;">
-          THE HERITAGE OF TIBETAN CRAFTSMANSHIP: OUR RUGS TELL A STORY
-        </h3>
+        <h3>THE HERITAGE OF TIBETAN CRAFTSMANSHIP: OUR RUGS TELL A STORY</h3>
         <p id="sub-heading">
           Discover the story woven into every rug, and let one of our
           hand-knotted Tibetan rugs bring timeless elegance to your space.
@@ -62,12 +60,7 @@ import process6 from "../assets/Process/process6.png";
     <h3 class="article-two-text">
       AT THE HEART OF EVERY RUG ARE THE ARTISANS BEHIND THE CRAFT
     </h3>
-    <Image
-      src={process6}
-      alt="Process"
-      height={590}
-      style="margin-top: 2.75rem; margin-bottom: 4rem;"
-    />
+    <Image src={process6} alt="Process" height={590} id="article-two-image" />
     <p class="article-two-text">
       We are deeply committed to supporting our artisans and their communities.
       By preserving this age-old craft and providing sustainable livelihoods, we
@@ -89,6 +82,10 @@ import process6 from "../assets/Process/process6.png";
     flex-direction: column;
     gap: 4.8rem;
     padding: 7rem 5.4rem;
+  }
+
+  h3 {
+    max-width: 45rem;
   }
 
   #container {
@@ -135,5 +132,61 @@ import process6 from "../assets/Process/process6.png";
 
   .article-two-text {
     max-width: 56rem;
+  }
+
+  #article-two-image {
+    margin-top: 2.75rem;
+    margin-bottom: 4rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    section {
+      padding: 4rem 1rem;
+      align-items: center;
+    }
+
+    h3 {
+      font-size: 2.4rem;
+      max-width: 100%;
+    }
+
+    #sub-heading {
+      font-size: 1.5rem;
+    }
+
+    #container {
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    #article-one {
+      gap: 1.5rem;
+    }
+
+    #paragraph {
+      flex-direction: column;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 140%;
+    }
+
+    #article-two {
+      margin: 0;
+      margin-bottom: 3rem;
+      padding: 3rem 1rem 5rem 1rem;
+    }
+
+    .article-two-text {
+      text-align: center;
+    }
+
+    #article-two-image {
+      width: 100%;
+      height: auto;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
   }
 </style>
