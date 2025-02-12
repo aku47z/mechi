@@ -18,6 +18,7 @@ const n = images.length;
           src={img}
           alt={`Process image ${index + 1}`}
           height={700}
+          loading={index === 0 ? "eager" : "lazy"}
         />
       ))
     }

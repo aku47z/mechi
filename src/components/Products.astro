@@ -4,7 +4,13 @@ const { img1, img2, title, text, materials } = Astro.props;
 ---
 
 <article>
-  <Image src={img1} alt="" width={400} class="img1" />
+  <Image
+    src={img1}
+    alt=""
+    width={400}
+    class="img1"
+    loading={title === "Festive" ? "eager" : "lazy"}
+  />
   <div id="info">
     <h4>{title}</h4>
     <p id="text">{text}</p>
