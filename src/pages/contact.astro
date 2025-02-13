@@ -1,21 +1,127 @@
 ---
+import { codes } from "../scripts/codes";
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
-import ContactForm from "../components/ContactForm.astro";
+import Success from "../components/Success.astro";
 import contact1 from "../assets/Contact/contact.png";
 import { Image } from "astro:assets";
 ---
 
-<Layout title="Contact">
+<Layout
+  title="Contact"
+  description="Contact Mechi Carpets today for inquiries, orders, or design consultations for our Tibetan Carpets. We'd love to hear from you."
+>
   <Navbar />
-  <div>
-    <ContactForm />
+  <div id="contact-container">
+    <div id="contact-form">
+      <form action="https://api.web3forms.com/submit" method="POST" id="form">
+        <h3>WE WOULD LOVE TO HEAR FROM YOU</h3>
+
+        <input
+          type="hidden"
+          name="access_key"
+          value={import.meta.env.PUBLIC_API_KEY}
+        />
+        <input type="hidden" name="from_name" value="🔔 Mechicarpet.com" />
+        <input
+          type="hidden"
+          name="subject"
+          value="New Form Submission from your Website"
+        />
+
+        <!-- Name -->
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="Your Name"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <!-- Phone Number (Country Code + Phone) -->
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <div class="phone-group">
+            <select name="countryCode" id="countryCode" required>
+              {
+                codes.map((code) => (
+                  <option value={`+${code.countryCodes}`}>
+                    {code.isoCode3} +{code.countryCodes}
+                  </option>
+                ))
+              }
+            </select>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              placeholder="Phone no."
+            />
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            maxlength="500"
+            required
+            placeholder="Your message (max 500 characters)"
+          >
+          </textarea>
+          <p class="help-text">Maximum 500 characters.</p>
+        </div>
+
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="hidden"
+          style="display: none;"
+        />
+
+        <button type="submit">
+          Submit
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="55"
+            viewBox="0 0 49 48"
+            fill="none"
+          >
+            <circle cx="24.5" cy="24" r="23.5" stroke="#000"></circle>
+            <path
+              d="M31.8646 17.636C31.8646 17.0837 31.4169 16.636 30.8646 16.636L21.8646 16.636C21.3124 16.636 20.8646 17.0837 20.8646 17.636C20.8646 18.1883 21.3124 18.636 21.8646 18.636L29.8646 18.636L29.8646 26.636C29.8646 27.1883 30.3124 27.636 30.8646 27.636C31.4169 27.636 31.8646 27.1883 31.8646 26.636L31.8646 17.636ZM18.8438 31.0711L31.5717 18.3431L30.1575 16.9289L17.4296 29.6568L18.8438 31.0711Z"
+              fill="#000"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
     <Image src={contact1} alt="Contact Us" id="img" />
   </div>
+  <Success />
 </Layout>
 
 <style>
-  div {
+  #contact-container {
     border-top: 1px solid #1b1b1c;
     padding: 4rem 1rem 6rem 1rem;
     display: flex;
@@ -24,14 +130,140 @@ import { Image } from "astro:assets";
     gap: 3rem;
   }
   #img {
-    height: 85vh;
+    height: 90vh;
     width: auto;
-    min-height: 70vh;
+    min-height: 75vh;
+  }
+
+  form {
+    max-width: 36rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  h3 {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    color: #414651;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    align-self: stretch;
+    border-radius: 0.5rem;
+    border: 1px solid var(--Gray-300, #d5d7da);
+    background: var(--White, #fff);
+    box-shadow: 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5rem;
+    color: #717680;
+  }
+  textarea {
+    resize: none;
+  }
+
+  .phone-group {
+    display: flex;
+  }
+  .phone-group select {
+    width: 30%;
+    margin-right: 5px;
+  }
+  .phone-group input {
+    width: 70%;
+  }
+  button {
+    background-color: #f6f6f6;
+    border-radius: 5rem;
+    border: 1px solid #bababa;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    padding: 0.825rem 0.875rem 1rem 1.625rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1.125rem;
+    cursor: pointer;
+    /* text style */
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.005rem;
+    text-decoration: none;
+  }
+  .help-text {
+    font-size: 0.75em;
+    color: #666;
   }
 
   @media screen and (max-width: 768px) {
+    form {
+      max-width: 100%;
+    }
+
+    h3 {
+      font-size: 2.5rem;
+    }
     #img {
       display: none;
     }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("form");
+    const modal = document.getElementById("modal");
+
+    form?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: json,
+      })
+        .then(async (response) => {
+          let json = await response.json();
+          if (response.status == 200) {
+            modal?.classList.add("open");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(function () {
+          form.reset();
+          modal?.addEventListener("click", (event) => {
+            if (event.target === modal) {
+              modal.classList.remove("open");
+            }
+          });
+        });
+    });
+  });
+</script>

@@ -1,0 +1,87 @@
+---
+import "@fontsource/montserrat/400.css";
+import { Image } from "astro:assets";
+import logo from "../assets/logo.svg";
+---
+
+<div id="modal">
+  <div class="modal-content">
+    <h3>THANK YOU FOR YOUR INTEREST!</h3>
+    <p>
+      Your sample request has been received.<br />
+      We'll notify you soon via email.
+    </p>
+    <p>
+      If you have any questions or need assistance, feel free to reach out to
+      us.
+    </p>
+    <Image src={logo} alt="logo" height={200} class="img" />
+    <p id="logo">
+      MECHI SURSHAR
+      <br />CARPET INDUSTRIES
+    </p>
+    <a href="/">Back to Home</a>
+  </div>
+</div>
+
+<style>
+  /* Overlay styling */
+  #modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+  }
+  #modal.open {
+    display: flex;
+  }
+  /* Modal content (centered, limited width) */
+  .modal-content {
+    background: #fff;
+    padding: 5rem 10rem;
+    max-width: 50rem;
+    width: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #000;
+  }
+  a {
+    margin-top: 1.5rem;
+    color: #656569;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: -0.015rem;
+  }
+  #logo {
+    margin-top: -2rem;
+    color: #6c6c6c;
+    text-align: center;
+    font-family: "Montserrat", "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+  }
+</style>
