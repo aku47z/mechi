@@ -15,6 +15,7 @@ import LegacyCarousel from "../components/LegacyCarousel.astro";
 const hero = await getImage({ src: home1 });
 const elevate = await getImage({ src: home10 });
 ---
+
 <Layout
   title="Mechi Carpets | High Quality Hand-Knotted Tibetan Rugs"
   description="Discover the timeless elegance of Mechi Carpets. Handcrafted Tibetan rugs since 1978, woven with tradition, artistry, and the finest materials. Explore our collection and elevate your space."
@@ -266,7 +267,7 @@ const elevate = await getImage({ src: home10 });
     max-width: 45rem;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 480px) {
     header {
       height: 100vh;
       display: flex;
@@ -302,44 +303,41 @@ const elevate = await getImage({ src: home10 });
 
     h2 {
       max-width: 95vw;
-      font-size: 3rem;
     }
 
     .one-two {
-      padding: 4rem 0rem;
-      gap: 2rem;
+      padding: 3.75rem 0rem;
+      gap: 2.25rem;
     }
 
     #legacy-description {
-      max-width: 90%;
-      font-size: 1.125rem;
+      max-width: 18rem;
     }
 
     #legacy-images {
-      overflow-x: auto;
       gap: 1rem;
+      overflow-x: hidden;
+      justify-content: center;
     }
 
     .side-image {
       flex: 1 1 20%;
       max-width: 20%;
-      min-width: 200px;
+      min-width: 110px;
     }
 
     .carousel-image {
       flex: 1 1 20%;
       max-width: 20%;
-      min-width: 200px;
+      min-width: 180px;
     }
 
     #cards {
-      width: 90%;
-      flex-direction: column;
-      gap: 0.5rem;
+      overflow-x: hidden;
     }
 
     #story {
-      padding: 4rem 1rem;
+      padding: 3.75rem 3rem;
       flex-direction: column;
       gap: 1rem;
     }
@@ -348,20 +346,19 @@ const elevate = await getImage({ src: home10 });
       min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      justify-content: center;
       gap: 1rem;
     }
 
     #story-description {
       max-width: 100vw;
-      font-size: 1.2rem;
     }
 
     #elevate {
-      height: 95vh;
-      padding: 0 1rem;
+      height: 40vh;
+      padding: 2rem 1rem;
       gap: 0.5rem;
-      justify-content: center;
+      justify-content: flex-end;
     }
 
     #elevate-text {
