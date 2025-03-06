@@ -16,11 +16,19 @@ import process6 from "../assets/Process/process6.png";
   <section>
     <div id="container">
       <article id="article-one">
-        <h3>THE HERITAGE OF TIBETAN CRAFTSMANSHIP: OUR RUGS TELL A STORY</h3>
+        <h3>
+          THE HERITAGE <span class="mobile-breaks"></span>OF TIBETAN
+          CRAFTSMANSHIP: <span class="mobile-breaks"></span>OUR RUGS TELL A
+          STORY
+        </h3>
         <p id="sub-heading">
           Discover the story woven into every rug, and let one of our
           hand-knotted Tibetan rugs bring timeless elegance to your space.
         </p>
+
+        <div id="mobile-carousel-container">
+          <ProcessCarousel />
+        </div>
 
         <div id="paragraph">
           <p>
@@ -28,16 +36,21 @@ import process6 from "../assets/Process/process6.png";
             tradition of hand-knotting Tibetan rugs, creating masterpieces that
             blend centuries-old craftsmanship with modern elegance. Our journey
             began with a deep respect for the artistry and skill that has been
-            passed down through generations of Tibetan artisans. Each rug we
-            offer is not just a piece of home décor but a testament to the
-            dedication and passion of the artisans who pour their hearts into
+            passed down through generations of Tibetan artisans.
+            <span class="mobile-breaks"><br /></span>
+            Each rug we offer is not just a piece of home décor but a testament to
+            the dedication and passion of the artisans who pour their hearts into
             every knot.<br />
-            <br />
-            The process of creating our hand-knotted Tibetan rugs is meticulous and
-            labor-intensive. Using the finest natural materials such as wool and
-            silk, each rug is crafted with care and precision.
+            <span class="expandable-content">
+              <br />
+              The process of creating our hand-knotted Tibetan rugs is meticulous
+              and labor-intensive. Using the finest natural materials such as wool
+              and silk, each rug is crafted with care and precision.
+            </span>
           </p>
-          <p>
+
+          <button class="read-more-btn">Read more</button>
+          <p class="expandable-content">
             The intricate knots are tied one by one, ensuring that every pattern
             and design tells a unique story. With colors inspired by the natural
             beauty of the Tibetan landscape and patterns that reflect cultural
@@ -53,13 +66,19 @@ import process6 from "../assets/Process/process6.png";
         </div>
       </article>
 
-      <ProcessCarousel />
+      <div id="desktop-carousel-container">
+        <ProcessCarousel />
+      </div>
     </div>
     <Button link="/product" text="See our work" color="#1b1b1c" />
   </section>
 
   <article id="article-two">
-    <p style="margin-bottom: 1.5rem;">The Craftsmanship</p>
+    <p
+      style="margin-bottom: 1.5rem; line-height: 120%; letter-spacing: 0.00538rem;"
+    >
+      The Craftsmanship
+    </p>
     <h3 class="article-two-text">
       AT THE HEART OF EVERY RUG ARE THE ARTISANS BEHIND THE CRAFT
     </h3>
@@ -142,54 +161,112 @@ import process6 from "../assets/Process/process6.png";
     margin-bottom: 4rem;
   }
 
-  @media screen and (max-width: 768px) {
-    section {
-      padding: 4rem 1rem;
-      align-items: center;
-    }
+  #mobile-carousel-container {
+    display: none;
+  }
 
-    h3 {
-      font-size: 2.4rem;
-      max-width: 100%;
+  .read-more-btn {
+    display: none;
+  }
+
+  @media screen and (max-width: 480px) {
+    section {
+      border-top: 0.5px solid #1b1b1c;
+      padding: 3rem 2.25rem;
+      align-items: center;
+      text-align: center;
+      gap: 2.25rem;
     }
 
     #sub-heading {
-      font-size: 1.5rem;
+      color: #656569;
+      font-family: "General Sans", sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.005rem;
     }
 
     #container {
+      width: 100%;
       flex-direction: column;
-      gap: 3rem;
+      gap: 2.25rem;
     }
 
     #article-one {
-      gap: 1.5rem;
+      gap: 2.25rem;
     }
 
     #paragraph {
       flex-direction: column;
-    }
-
-    p {
-      font-size: 1.2rem;
-      line-height: 140%;
+      gap: 1.2rem;
     }
 
     #article-two {
       margin: 0;
-      margin-bottom: 3rem;
-      padding: 3rem 1rem 5rem 1rem;
+      padding: 3rem 2.25rem;
+      gap: 2.25rem;
     }
 
-    .article-two-text {
-      text-align: center;
+    h3.article-two-text {
+      margin-top: -2rem;
     }
 
     #article-two-image {
       width: 100%;
       height: auto;
-      margin-top: 1rem;
-      margin-bottom: 2rem;
+      margin: 0;
+    }
+
+    #mobile-carousel-container {
+      display: block;
+    }
+
+    #desktop-carousel-container {
+      display: none;
+    }
+
+    .read-more-btn {
+      display: block;
+      cursor: pointer;
+      border: none;
+      background-color: transparent;
+      color: #656569;
+      text-align: center;
+      font-family: "General Sans";
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%;
+      letter-spacing: 0.00375rem;
+      text-decoration-line: underline;
+      text-decoration-style: solid;
+      text-decoration-skip-ink: none;
+      text-decoration-thickness: auto;
+      text-underline-offset: auto;
+      text-underline-position: from-font;
+    }
+
+    .expandable-content {
+      display: none;
+    }
+
+    .expandable-content.expanded {
+      display: block;
     }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btns = document.querySelectorAll(".read-more-btn");
+
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const expandableContent = document.querySelectorAll(
+          ".expandable-content"
+        );
+        expandableContent.forEach((a) => a.classList.add("expanded"));
+        btn.style.display = "none";
+      });
+    });
+  });
+</script>

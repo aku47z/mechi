@@ -20,10 +20,11 @@ const aboutBackground = await getImage({ src: about1 });
     <h2>OUR STORY</h2>
     <p>
       Founded in 1978, Mechi Surshar Carpet started off with a small store in
-      Thamel, Kathmandu during the heights of the flower revolution. Since then,
-      this family owned business has produced thousands of square meters of
-      expertly handknotted rugs. Mechi’s rugs can be traced to a wide variety of
-      clients all over the world.
+      Thamel, Kathmandu during the heights of the flower revolution.<span
+        class="spacing"><br /></span
+      >Since then, this family owned business has produced thousands of square
+      meters of expertly handknotted rugs. Mechi’s rugs can be traced to a wide
+      variety of clients all over the world.
     </p>
     <div>
       <Image
@@ -45,11 +46,11 @@ const aboutBackground = await getImage({ src: about1 });
       friend Steve met in Kathmandu in the 70’s. Even in the early days, they
       were quickly able to recognize the fine quality and craftsmanship of
       Tibetan rugs which had been introduced by Tibetan exiles in the 60’s.
-      Steve with inspiration of the Arts and craft movement was able to
-      revolutionize the traditional Tibetan rugs by incorporating modern designs
-      into the rugs which were mostly traditional Tibetan motifs. Today, we see
-      their passion reflect on the looms with the production of exceptional rug
-      designs coupled with expert craftsmanship.
+      <span class="spacing"><br /></span>Steve with inspiration of the Arts and
+      craft movement was able to revolutionize the traditional Tibetan rugs by
+      incorporating modern designs into the rugs which were mostly traditional
+      Tibetan motifs. Today, we see their passion reflect on the looms with the
+      production of exceptional rug designs coupled with expert craftsmanship.
     </p>
   </section>
 </Layout>
@@ -64,6 +65,10 @@ const aboutBackground = await getImage({ src: about1 });
 
   p {
     text-align: center;
+  }
+
+  .spacing {
+    display: none !important;
   }
 
   section {
@@ -83,33 +88,32 @@ const aboutBackground = await getImage({ src: about1 });
     padding: 2rem;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 480px) {
     header {
       height: 70vh;
     }
 
-    h2 {
-      font-size: 3rem;
-    }
-
-    p {
-      font-size: 1.2rem;
+    .spacing {
+      display: block !important;
     }
 
     section {
-      margin: 2rem auto;
-      padding: 1rem;
-      gap: 1rem;
+      margin: 3.75rem auto;
+      padding-left: 2.25rem;
+      padding-right: 2.25rem;
+      gap: 2.25rem;
+      max-width: fit-content;
     }
 
     div {
       flex-direction: column;
       padding: 1rem;
-      gap: 0;
+      gap: 1rem;
     }
 
     .img {
-      width: 100vw;
+      width: 60vw;
+      height: auto;
     }
   }
 </style>

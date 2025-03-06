@@ -237,15 +237,15 @@ const images = [
     width: fit-content;
     height: fit-content;
     display: flex;
-    padding: 0.825rem 0.875rem 1rem 1.625rem;
+    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     justify-content: center;
     align-items: center;
-    gap: 1.125rem;
+    gap: 1rem;
     cursor: pointer;
     /* text style */
     color: #1b1b1c;
     font-family: "General Sans", sans-serif;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -322,14 +322,59 @@ const images = [
     padding-left: 0.5rem;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 480px) {
+    #req-form {
+      border-top: 0.5px solid rgba(0, 0, 0, 0.7);
+      width: 100%;
+      padding: 3rem 2.25rem;
+    }
+
     form {
+      margin-top: 0;
       max-width: 100%;
       flex-direction: column;
     }
 
     h3 {
-      font-size: 2.5rem;
+      margin-bottom: 0;
+    }
+
+    #desktop-img {
+      display: none; /* Hide desktop image on mobile */
+    }
+
+    .mobile-img-container {
+      display: block; /* Show mobile image */
+    }
+
+    .mobile-img-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    #contact-container {
+      border-top: 0.5px solid #1b1b1c;
+      padding: 3rem 2.25rem;
+      flex-direction: column;
+      gap: 2.25rem;
+    }
+
+    input,
+    select,
+    textarea,
+    label {
+      font-size: 0.875rem;
+    }
+
+    button {
+      padding: 0.625rem 0.625rem 0.625rem 1.5rem;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    svg {
+      width: 2.25rem;
+      height: 2.25rem;
     }
   }
 </style>

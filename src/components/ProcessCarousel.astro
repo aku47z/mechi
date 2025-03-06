@@ -7,10 +7,11 @@ import process5 from "../assets/Process/process5.png";
 
 const images = [process1, process2, process3, process5];
 const n = images.length;
+const uniqueId = Math.random().toString(36).substring(2, 9); // Generate unique ID
 ---
 
-<div>
-  <div id="carousel">
+<div class="carousel-container" data-carousel-id={uniqueId}>
+  <div id={`carousel-${uniqueId}`} class="carousel">
     {
       images.map((img, index) => (
         <Image
@@ -24,7 +25,7 @@ const n = images.length;
     }
   </div>
 
-  <div id="dots-container">
+  <div id={`dots-container-${uniqueId}`} class="dots-container">
     {
       Array.from({ length: n }).map((_, index) => (
         <div class="dot" data-index={index} />
@@ -35,7 +36,7 @@ const n = images.length;
 
 <style>
   /* Carousel container */
-  #carousel {
+  .carousel {
     position: relative;
     height: 810px;
     width: 565px;
@@ -58,7 +59,7 @@ const n = images.length;
     opacity: 1;
   }
 
-  #dots-container {
+  .dots-container {
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -78,22 +79,27 @@ const n = images.length;
     transition: 1s ease;
   }
 
-  @media screen and (max-width: 768px) {
-    #carousel {
-      width: 90vw;
-      height: 130vw;
+  @media screen and (max-width: 480px) {
+    .carousel {
+      width: 80vw;
+      height: 115vw;
     }
 
     .slide {
-      width: 80vw;
+      width: 70vw;
       height: auto;
       top: 5vw;
       right: 5vw;
     }
 
+    .dots-container {
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
     .dot {
-      width: 0.8rem;
-      height: 0.8rem;
+      width: 0.65rem;
+      height: 0.65rem;
     }
   }
 </style>
@@ -101,47 +107,57 @@ const n = images.length;
 <script>
   // Wait until DOM is fully loaded
   document.addEventListener("DOMContentLoaded", () => {
-    const slides = document.querySelectorAll(".slide");
-    const dots = document.querySelectorAll(".dot");
-    let currentIndex = 0;
-    let timer: number;
+    // Find all carousel containers on the page
+    const carouselContainers = document.querySelectorAll(".carousel-container");
 
-    // Function to display a slide (and update the corresponding dot)
-    function showSlide(index: number) {
-      slides.forEach((slide) => slide.classList.remove("active"));
-      dots.forEach((dot) => dot.classList.remove("active"));
-      slides[index].classList.add("active");
-      dots[index].classList.add("active");
-      currentIndex = index;
-    }
+    // Initialize each carousel independently
+    carouselContainers.forEach((container) => {
+      // Get unique ID for this carousel instance
+      const carouselId = container.getAttribute("data-carousel-id");
 
-    // Advance to the next slide
-    function nextSlide() {
-      const nextIndex = (currentIndex + 1) % slides.length;
-      showSlide(nextIndex);
-    }
+      // Get elements specific to this carousel instance
+      const slides = container.querySelectorAll(".slide");
+      const dots = container.querySelectorAll(".dot");
+      let currentIndex = 0;
+      let timer;
 
-    // Start or restart the timer for auto-advancing slides
-    function startTimer() {
-      timer = setInterval(nextSlide, 2500);
-    }
+      // Function to display a slide (and update the corresponding dot)
+      function showSlide(index) {
+        slides.forEach((slide) => slide.classList.remove("active"));
+        dots.forEach((dot) => dot.classList.remove("active"));
+        slides[index].classList.add("active");
+        dots[index].classList.add("active");
+        currentIndex = index;
+      }
 
-    function resetTimer() {
-      clearInterval(timer);
+      // Advance to the next slide
+      function nextSlide() {
+        const nextIndex = (currentIndex + 1) % slides.length;
+        showSlide(nextIndex);
+      }
+
+      // Start or restart the timer for auto-advancing slides
+      function startTimer() {
+        timer = setInterval(nextSlide, 2500);
+      }
+
+      function resetTimer() {
+        clearInterval(timer);
+        startTimer();
+      }
+
+      // Initialize the slideshow
+      showSlide(0);
       startTimer();
-    }
 
-    // Initialize the slideshow
-    showSlide(0);
-    startTimer();
-
-    // Add click events to the dots for manual slide selection
-    dots.forEach((dot) => {
-      dot.addEventListener("click", (event) => {
-        const target = event.target as HTMLElement;
-        const index = parseInt(target.getAttribute("data-index") || "0", 10);
-        showSlide(index);
-        resetTimer();
+      // Add click events to the dots for manual slide selection
+      dots.forEach((dot) => {
+        dot.addEventListener("click", (event) => {
+          const target = event.target;
+          const index = parseInt(target.getAttribute("data-index") || "0", 10);
+          showSlide(index);
+          resetTimer();
+        });
       });
     });
   });
