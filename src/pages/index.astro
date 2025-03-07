@@ -4,23 +4,24 @@ import Navbar from "../components/Navbar.astro";
 import Card from "../components/Card.astro";
 import Button from "../components/Button.astro";
 import { Image, getImage } from "astro:assets";
-import home1 from "../assets/Homepage/Home 1.png";
+import home1 from "../assets/Homepage/Home 1.jpeg";
 import home2 from "../assets/Homepage/Home 2.png";
 import home7 from "../assets/Homepage/Home 7.png";
 import home6 from "../assets/Homepage/Home 6.png";
 import home8 from "../assets/Homepage/Home 8.png";
 import home9 from "../assets/Homepage/Home 9.png";
-import home10 from "../assets/Homepage/Home 10.png";
+import home10 from "../assets/Homepage/Home 10.jpg";
 import LegacyCarousel from "../components/LegacyCarousel.astro";
 const hero = await getImage({ src: home1 });
 const elevate = await getImage({ src: home10 });
 ---
+
 <Layout
   title="Mechi Carpets | High Quality Hand-Knotted Tibetan Rugs"
   description="Discover the timeless elegance of Mechi Carpets. Handcrafted Tibetan rugs since 1978, woven with tradition, artistry, and the finest materials. Explore our collection and elevate your space."
 >
   <header
-    style={`background: linear-gradient(180deg, #191919 -4.4%, rgba(25, 25, 25, 0.5) 10%, rgba(25, 25, 25, 0) 20%), center url('${hero.src}'); background-size: cover;`}
+    style={`background: linear-gradient(180deg, #191919 -4.4%, rgba(25, 25, 25, 0.5) 10%, rgba(25, 25, 25, 0) 35%), center url('${hero.src}'); background-size: cover;`}
   >
     <Navbar theme="dark" />
     <div id="hero">
@@ -124,7 +125,9 @@ const elevate = await getImage({ src: home10 });
 
 <style>
   header {
-    height: 1910px;
+    margin-top: -250px;
+    padding-top: 250px;
+    height: 2180px;
     width: auto;
   }
 
@@ -200,10 +203,11 @@ const elevate = await getImage({ src: home10 });
   }
 
   #legacy-images {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    width: 100%;
+    gap: 1rem;
   }
 
   .image-wrapper {
@@ -251,6 +255,7 @@ const elevate = await getImage({ src: home10 });
   }
 
   #elevate {
+    margin-bottom: -10px;
     height: 808px;
     width: auto;
     display: flex;
@@ -258,7 +263,7 @@ const elevate = await getImage({ src: home10 });
     gap: 2rem;
     justify-content: flex-end;
     align-items: center;
-    padding-bottom: 88px;
+    padding-bottom: 125px;
   }
 
   #elevate-text {
@@ -268,36 +273,41 @@ const elevate = await getImage({ src: home10 });
 
   @media screen and (max-width: 480px) {
     header {
-      height: 100vh;
+      margin-top: -50px;
+      padding-top: 50px;
+      height: 750px;
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
     }
 
     #hero {
       margin-top: 20px;
-      gap: 0;
+      gap: 0.25rem;
     }
 
     #hero-1 {
-      /* background: radial-gradient(rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0) 70%); */
+      background: radial-gradient(rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0) 70%);
       border-radius: 50%;
-      font-size: 2rem;
+      font-size: 1.25rem;
+      letter-spacing: -0.0375rem;
     }
 
     #hero-2 {
       background: radial-gradient(rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0) 80%);
       border-radius: 50%;
-      font-size: 3.2rem;
-      line-height: 100%; /* 3rem */
-      letter-spacing: -0.06rem;
+      font-size: 2rem;
+      letter-spacing: -0.1rem;
     }
 
     #hero-3 {
-      padding: 3rem 3rem 0 3rem;
+      background: radial-gradient(rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0) 70%);
+      padding-top: 8rem;
+      max-width: 19rem;
       margin-top: auto;
       margin-bottom: auto;
-      font-size: 1.8rem;
-      width: 90%;
+      font-size: 1.25rem;
+      letter-spacing: -0.025rem;
     }
 
     h2 {
@@ -314,7 +324,6 @@ const elevate = await getImage({ src: home10 });
     }
 
     #legacy-images {
-      gap: 1rem;
       overflow-x: hidden;
       justify-content: center;
     }
@@ -332,7 +341,9 @@ const elevate = await getImage({ src: home10 });
     }
 
     #cards {
-      overflow-x: hidden;
+      overflow-x: scroll;
+      max-width: 90vw;
+      scroll-behavior: smooth;
     }
 
     #story {
@@ -354,7 +365,8 @@ const elevate = await getImage({ src: home10 });
     }
 
     #elevate {
-      height: 40vh;
+      margin-bottom: 0;
+      height: 330px;
       padding: 2rem 1rem;
       gap: 0.5rem;
       justify-content: flex-end;

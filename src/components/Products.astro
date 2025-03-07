@@ -6,7 +6,7 @@ const { img1, img2, title, text, materials } = Astro.props;
 <article>
   <Image
     src={img1}
-    alt=""
+    alt={title + "rug design"}
     width={400}
     class="img1"
     loading={title === "Festive" ? "eager" : "lazy"}
@@ -16,7 +16,7 @@ const { img1, img2, title, text, materials } = Astro.props;
     <p id="text">{text}</p>
     <p id="material">{materials}</p>
   </div>
-  <Image src={img2} alt="" width={400} class="img2" />
+  <Image src={img2} alt={title + "rug inspiration"} width={400} class="img2" />
 </article>
 
 <style>
