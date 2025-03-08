@@ -2,12 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import { Image, getImage } from "astro:assets";
-import about1 from "../assets/About/about1.png";
+import about1 from "../assets/About/about1.jpg";
 import about2 from "../assets/About/about2.png";
 import about3 from "../assets/About/about3.png";
 
 const aboutBackground = await getImage({ src: about1 });
 ---
+
 <Layout
   title="About"
   description="Discover the rich history of Mechi Carpets, handcrafted Tibetan rug makers since 1978. Learn about our founders' vision, the artistry behind our rugs, and our commitment to quality craftsmanship."
@@ -16,17 +17,17 @@ const aboutBackground = await getImage({ src: about1 });
     <Navbar theme="dark" />
   </header>
 
-  <section>
-    <h2>OUR STORY</h2>
-    <p>
+  <section class="animate-section">
+    <h2 class="slide-up">OUR STORY</h2>
+    <p class="slide-up">
       Founded in 1978, Mechi Surshar Carpet started off with a small store in
-      Thamel, Kathmandu during the heights of the flower revolution.<span
-        class="spacing"><br /></span
+      Thamel, Kathmandu during the heights of the flower revolution. <span
+        class="mobile-breaks"><br /></span
       >Since then, this family owned business has produced thousands of square
-      meters of expertly handknotted rugs. Mechi’s rugs can be traced to a wide
+      meters of expertly handknotted rugs. Mechi's rugs can be traced to a wide
       variety of clients all over the world.
     </p>
-    <div>
+    <div class="image-container fade-in">
       <Image
         src={about2}
         alt="Mechi Surshar Carpets Founders"
@@ -40,26 +41,29 @@ const aboutBackground = await getImage({ src: about1 });
         class="img"
       />
     </div>
-    <h2>THE FOUNDATION</h2>
-    <p>
-      The company’s founder Namgyal and his American importer and long time
-      friend Steve met in Kathmandu in the 70’s. Even in the early days, they
+    <h2 class="slide-up">THE FOUNDATION</h2>
+    <p class="slide-up">
+      The company's founder Namgyal and his American importer and long time
+      friend Steve met in Kathmandu in the 70's. Even in the early days, they
       were quickly able to recognize the fine quality and craftsmanship of
-      Tibetan rugs which had been introduced by Tibetan exiles in the 60’s.
-      <span class="spacing"><br /></span>Steve with inspiration of the Arts and
-      craft movement was able to revolutionize the traditional Tibetan rugs by
-      incorporating modern designs into the rugs which were mostly traditional
-      Tibetan motifs. Today, we see their passion reflect on the looms with the
-      production of exceptional rug designs coupled with expert craftsmanship.
+      Tibetan rugs which had been introduced by Tibetan exiles in the 60's.
+      <span class="mobile-breaks"><br /></span>Steve with inspiration of the
+      Arts and craft movement was able to revolutionize the traditional Tibetan
+      rugs by incorporating modern designs into the rugs which were mostly
+      traditional Tibetan motifs. Today, we see their passion reflect on the
+      looms with the production of exceptional rug designs coupled with expert
+      craftsmanship.
     </p>
   </section>
 </Layout>
 
 <style>
   header {
+    margin-top: -600px;
+    padding-top: 600px;
     background-size: cover;
     background-position: center;
-    height: 1360px;
+    height: 1900px;
     width: auto;
   }
 
@@ -67,34 +71,63 @@ const aboutBackground = await getImage({ src: about1 });
     text-align: center;
   }
 
-  .spacing {
-    display: none !important;
-  }
-
   section {
-    margin: 10rem auto;
+    margin: 5rem auto 10rem auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 4.175rem;
+    gap: 3rem;
     max-width: min-content;
   }
 
-  div {
+  .image-container {
     background-color: #fff;
     display: flex;
     gap: 2rem;
     padding: 2rem;
   }
 
+  .slide-up,
+  .fade-in {
+    opacity: 0;
+    transition-duration: 0.8s;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+
+  .slide-up {
+    transform: translateY(30px);
+  }
+
+  .slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+  }
+
+  .image-container .img {
+    opacity: 0;
+    transform: translateY(15px);
+    transition:
+      opacity 0.8s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .image-container.visible .img {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   @media screen and (max-width: 480px) {
     header {
-      height: 70vh;
-    }
-
-    .spacing {
-      display: block !important;
+      margin-top: -50px;
+      padding-top: 50px;
+      height: 500px;
     }
 
     section {
@@ -105,7 +138,7 @@ const aboutBackground = await getImage({ src: about1 });
       max-width: fit-content;
     }
 
-    div {
+    .image-container {
       flex-direction: column;
       padding: 1rem;
       gap: 1rem;
@@ -117,3 +150,46 @@ const aboutBackground = await getImage({ src: about1 });
     }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const animationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+
+            if (entry.target.classList.contains("image-container")) {
+              const images = entry.target.querySelectorAll(".img");
+              images.forEach((img, index) => {
+                setTimeout(() => {
+                  img.style.transitionDelay = "0s";
+                  img.classList.add("visible");
+                }, index * 180);
+              });
+            }
+
+            animationObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -5% 0px",
+      }
+    );
+
+    const animatedElements = document.querySelectorAll(".slide-up, .fade-in");
+
+    animatedElements.forEach((el) => {
+      animationObserver.observe(el);
+    });
+
+    const header = document.querySelector("header.fade-in");
+    if (header) {
+      setTimeout(() => {
+        header.classList.add("visible");
+      }, 100);
+    }
+  });
+</script>

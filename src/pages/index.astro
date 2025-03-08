@@ -21,12 +21,14 @@ const elevate = await getImage({ src: home10 });
   description="Discover the timeless elegance of Mechi Carpets. Handcrafted Tibetan rugs since 1978, woven with tradition, artistry, and the finest materials. Explore our collection and elevate your space."
 >
   <header
-    style={`background: linear-gradient(180deg, #191919 -4.4%, rgba(25, 25, 25, 0.5) 10%, rgba(25, 25, 25, 0) 35%), center url('${hero.src}'); background-size: cover;`}
+    style={`background: linear-gradient(180deg, #191919 -4.4%, rgba(25, 25, 25, 0.5) 25%, rgba(25, 25, 25, 0) 45%), center url('${hero.src}'); background-size: cover;`}
   >
     <Navbar theme="dark" />
     <div id="hero">
       <h1 id="hero-1">For the finest</h1>
-      <h1 id="hero-2">TIBETAN<br />HANDCRAFTED<br />CARPETS</h1>
+      <h1 id="hero-2">
+        TIBETAN<br />HANDCRAFTED<br />CARPETS
+      </h1>
     </div>
     <h3 id="hero-3">
       With every rug,<br />
@@ -35,18 +37,18 @@ const elevate = await getImage({ src: home10 });
     </h3>
   </header>
 
-  <section class="one-two">
+  <section class="one-two animate-section">
     <div>
-      <h2>LEGACY</h2>
-      <p id="legacy-year">since 1978</p>
+      <h2 class="slide-up">LEGACY</h2>
+      <p id="legacy-year" class="slide-up">since 1978</p>
     </div>
-    <p id="legacy-description">
+    <p id="legacy-description" class="slide-up">
       Our legacy is woven into every strand of wool and silk, reflecting a
       commitment to the finest materials, intricate patterns, and rich textures.
       Let us enrich your home with unmatched quality, artistry, and timeless
       elegance.
     </p>
-    <div id="legacy-images">
+    <div id="legacy-images" class="fade-in">
       <div class="image-wrapper side-image">
         <Image
           src={home2}
@@ -68,9 +70,9 @@ const elevate = await getImage({ src: home10 });
     <Button link="/product" text="Explore our products" color="#1b1b1c" />
   </section>
 
-  <section class="one-two" style="background-color: #FFFDFD;">
-    <h2>WHY MECHI<br />SURSHAR CARPETS?</h2>
-    <div id="cards">
+  <section class="one-two animate-section" style="background-color: #FFFDFD;">
+    <h2 class="slide-up">WHY MECHI<br />SURSHAR CARPETS?</h2>
+    <div id="cards" class="fade-in">
       <Card
         image={home7}
         title="Innovative Colors"
@@ -90,12 +92,14 @@ const elevate = await getImage({ src: home10 });
     <Button link="/contact" text="Contact us" color="#1b1b1c" />
   </section>
 
-  <section id="story">
+  <section id="story" class="animate-section">
     <div id="story-title">
-      <h2 style="text-align: left;">THE STORY OF OUR HANDMADE RUGS</h2>
+      <h2 style="text-align: left;" class="slide-up">
+        THE STORY OF OUR HANDMADE RUGS
+      </h2>
       <Button link="/about" text="Learn more about us" color="#1b1b1c" />
     </div>
-    <p id="story-description">
+    <p id="story-description" class="slide-up">
       The process of creating our hand-knotted Tibetan rugs is meticulous and
       labor-intensive. Using the finest natural materials such as wool and silk,
       each rug is crafted with care and precision. The intricate knots are tied
@@ -116,18 +120,26 @@ const elevate = await getImage({ src: home10 });
 
   <section
     id="elevate"
+    class="animate-section"
     style={`background: linear-gradient(-7deg, rgba(0, 0, 0, 0.81) -0.57%, rgba(0, 0, 0, 0) 75.89%), center url('${elevate.src}'); background-size: cover;`}
   >
-    <h2 id="elevate-text">ELEVATE YOUR SPACE WITH OUR CARPETS</h2>
-    <Button link="/product" text="View our collection" color="#ffffff" />
+    <h2 id="elevate-text" class="slide-up">
+      ELEVATE YOUR SPACE WITH OUR CARPETS
+    </h2>
+    <Button
+      link="/product"
+      text="View our collection"
+      color="#ffffff"
+      class="slide-up"
+    />
   </section>
 </Layout>
 
 <style>
   header {
-    margin-top: -250px;
-    padding-top: 250px;
-    height: 2180px;
+    margin-top: -380px;
+    padding-top: 380px;
+    height: 2280px;
     width: auto;
   }
 
@@ -302,7 +314,7 @@ const elevate = await getImage({ src: home10 });
 
     #hero-3 {
       background: radial-gradient(rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0) 70%);
-      padding-top: 8rem;
+      padding-top: 7rem;
       max-width: 19rem;
       margin-top: auto;
       margin-bottom: auto;
@@ -324,7 +336,6 @@ const elevate = await getImage({ src: home10 });
     }
 
     #legacy-images {
-
       overflow-x: hidden;
       justify-content: center;
     }
@@ -377,4 +388,159 @@ const elevate = await getImage({ src: home10 });
       max-width: 80vw;
     }
   }
+
+  /* Refined animation styles */
+  .slide-up,
+  .fade-in {
+    opacity: 0;
+    transition-duration: 1s;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(
+      0.33,
+      1,
+      0.68,
+      1
+    ); /* Smooth easing */
+    will-change: opacity, transform; /* Performance optimization */
+  }
+
+  .slide-up {
+    transform: translateY(30px);
+  }
+
+  .slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+  }
+
+  /* Animation for cards to stagger in */
+  #cards .card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.8s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  #cards.visible .card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Animation for legacy images to come in smoothly */
+  #legacy-images .image-wrapper {
+    opacity: 0;
+    transform: translateY(15px);
+    transition:
+      opacity 0.7s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.7s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  #legacy-images.visible .image-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Progressive animation triggering for regular sections
+    const animateSections = document.querySelectorAll(".animate-section");
+
+    // Observer for sections
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const section = entry.target;
+
+            // Get all animatable elements in this section
+            const elements = section.querySelectorAll(".slide-up, .fade-in");
+
+            // Animate elements with a slight staggered delay
+            elements.forEach((el, index) => {
+              setTimeout(() => {
+                el.classList.add("visible");
+              }, index * 120); // Stagger each element by 120ms
+            });
+
+            // Stop observing once triggered
+            sectionObserver.unobserve(section);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.2, // Start when section is 20% visible
+        rootMargin: "0px 0px -10% 0px",
+      }
+    );
+
+    // Observe all sections
+    animateSections.forEach((section) => sectionObserver.observe(section));
+
+    // Special handling for card animations
+    const cardsContainer = document.getElementById("cards");
+    if (cardsContainer) {
+      const cards = cardsContainer.querySelectorAll(".card");
+
+      const cardsObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // Add visible class to container
+              cardsContainer.classList.add("visible");
+
+              // Stagger individual cards
+              cards.forEach((card, index) => {
+                card.style.transitionDelay = `${index * 180}ms`;
+              });
+
+              cardsObserver.unobserve(cardsContainer);
+            }
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: "0px 0px -10% 0px",
+        }
+      );
+
+      cardsObserver.observe(cardsContainer);
+    }
+
+    // Special handling for legacy images
+    const legacyImages = document.getElementById("legacy-images");
+    if (legacyImages) {
+      const images = legacyImages.querySelectorAll(".image-wrapper");
+
+      const imagesObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // Add visible class to container
+              legacyImages.classList.add("visible");
+
+              // Stagger individual images
+              images.forEach((img, index) => {
+                img.style.transitionDelay = `${index * 150}ms`;
+              });
+
+              imagesObserver.unobserve(legacyImages);
+            }
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: "0px 0px -10% 0px",
+        }
+      );
+
+      imagesObserver.observe(legacyImages);
+    }
+  });
+</script>

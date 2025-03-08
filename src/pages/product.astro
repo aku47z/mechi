@@ -74,15 +74,23 @@ const products = [
       WELCOME TO OUR PRODUCT COLLECTION, DEFINED BY TRADITION AND DESIGNED FOR
       MODERN GRACE.
     </h3>
-    <p>All our rugs are fully customizable in shape size and color.</p>
+    <p>All our rugs are fully customizable in shape, size and color.</p>
 
-    <div id="mobile-view-only">
+    <div id="sticky-sample-button" class="hidden">
       <Button link="/request" text="Request sample" color="#1b1b1c" />
     </div>
 
-    {products.map((product) => <Products {...product} />)}
+    <div id="products-container">
+      {
+        products.map((product, index) => (
+          <div class="product-wrapper" data-index={index}>
+            <Products {...product} />
+          </div>
+        ))
+      }
+    </div>
 
-    <div id="request">
+    <div id="request" class="fade-in">
       <Button link="/request" text="Request sample" color="#1b1b1c" />
     </div>
   </div>
@@ -100,10 +108,6 @@ const products = [
     margin-bottom: 1.5rem;
   }
 
-  #mobile-view-only {
-    display: none !important;
-  }
-
   #request {
     min-height: 13.25rem;
     display: flex;
@@ -111,7 +115,77 @@ const products = [
     align-items: center;
   }
 
+  .slide-up,
+  .fade-in {
+    opacity: 0;
+    transition-duration: 1s;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+
+  .slide-up {
+    transform: translateY(20px);
+  }
+
+  .slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+  }
+
+  .product-wrapper {
+    opacity: 0.5;
+    transform: translateY(30px);
+    transition:
+      opacity 1s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 1s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .product-wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* New sticky button styles */
+  #sticky-sample-button {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  #sticky-sample-button.visible {
+    visibility: visible;
+    background-color: #f6f6f6;
+    opacity: 0.8;
+    border-radius: 5rem;
+  }
+
+  #sticky-sample-button a {
+    padding: 0.625rem 1.25rem;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Update responsive styles */
   @media screen and (max-width: 768px) {
+    #sticky-sample-button {
+      display: block;
+    }
+
     #container {
       padding: 3rem 2.25rem;
       border-top: 0.5px solid #1b1b1c;
@@ -123,13 +197,90 @@ const products = [
       font-size: 2rem;
     }
 
-    #mobile-view-only {
-      margin-top: 2.25rem;
-      display: block !important;
-    }
-
+    /* Hide the footer button on mobile - we'll use the sticky one instead */
     #request {
-      min-height: 8rem;
+      display: none;
     }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Create one observer for all animated elements
+    const animationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Add visible class without delay
+            entry.target.classList.add("visible");
+            // Stop observing once triggered
+            animationObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.15, // Trigger when 15% of element is visible
+        rootMargin: "0px 0px -5% 0px", // Slightly before element comes into view
+      }
+    );
+
+    // Select all elements to animate
+    const animatedElements = document.querySelectorAll(
+      ".slide-up, .fade-in, .product-wrapper"
+    );
+
+    // Observe each element
+    animatedElements.forEach((el) => {
+      animationObserver.observe(el);
+    });
+
+    // New sticky button logic - show when products are in view
+    const productsContainer = document.getElementById("products-container");
+    const stickyButton = document.getElementById("sticky-sample-button");
+
+    if (productsContainer && stickyButton && window.innerWidth <= 768) {
+      // Create an observer for the products container
+      const productObserver = new IntersectionObserver(
+        (entries) => {
+          // When any product is in view, show the sticky button
+          if (entries[0].isIntersecting) {
+            stickyButton.classList.add("visible");
+          } else {
+            stickyButton.classList.remove("visible");
+          }
+        },
+        {
+          threshold: 0.1, // Show when at least 10% of products container is visible
+          rootMargin: "0px 0px 0px 0px",
+        }
+      );
+
+      // Start observing products
+      productObserver.observe(productsContainer);
+
+      // Also hide button when at the bottom near the footer button
+      const requestSection = document.getElementById("request");
+      if (requestSection) {
+        const footerObserver = new IntersectionObserver(
+          (entries) => {
+            // Hide sticky button when footer button is visible
+            if (entries[0].isIntersecting) {
+              stickyButton.classList.remove("visible");
+            } else if (
+              productsContainer.getBoundingClientRect().top < window.innerHeight
+            ) {
+              // Re-show if we're still in the products section
+              stickyButton.classList.add("visible");
+            }
+          },
+          {
+            threshold: 0.5,
+            rootMargin: "0px 0px 0px 0px",
+          }
+        );
+
+        footerObserver.observe(requestSection);
+      }
+    }
+  });
+</script>

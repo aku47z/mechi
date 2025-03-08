@@ -14,14 +14,14 @@ import process6 from "../assets/Process/process6.png";
   <Navbar />
 
   <section>
-    <div id="container">
+    <div id="container" class="animate-section">
       <article id="article-one">
-        <h3>
+        <h3 class="slide-up">
           THE HERITAGE <span class="mobile-breaks"></span>OF TIBETAN
           CRAFTSMANSHIP: <span class="mobile-breaks"></span>OUR RUGS TELL A
           STORY
         </h3>
-        <p id="sub-heading">
+        <p id="sub-heading" class="slide-up">
           Discover the story woven into every rug, and let one of our
           hand-knotted Tibetan rugs bring timeless elegance to your space.
         </p>
@@ -30,8 +30,8 @@ import process6 from "../assets/Process/process6.png";
           <ProcessCarousel />
         </div>
 
-        <div id="paragraph">
-          <p>
+        <div id="paragraph" class="animate-section">
+          <p class="slide-up">
             At Mechi Surshar Carpet Industries, we take pride in the timeless
             tradition of hand-knotting Tibetan rugs, creating masterpieces that
             blend centuries-old craftsmanship with modern elegance. Our journey
@@ -49,8 +49,8 @@ import process6 from "../assets/Process/process6.png";
             </span>
           </p>
 
-          <button class="read-more-btn">Read more</button>
-          <p class="expandable-content">
+          <button class="read-more-btn slide-up">Read more</button>
+          <p class="expandable-content slide-up">
             The intricate knots are tied one by one, ensuring that every pattern
             and design tells a unique story. With colors inspired by the natural
             beauty of the Tibetan landscape and patterns that reflect cultural
@@ -70,20 +70,25 @@ import process6 from "../assets/Process/process6.png";
         <ProcessCarousel />
       </div>
     </div>
-    <Button link="/product" text="See our work" color="#1b1b1c" />
+    <div class="button-wrapper slide-up">
+      <Button link="/product" text="See our work" color="#1b1b1c" />
+    </div>
   </section>
 
-  <article id="article-two">
+  <article id="article-two" class="animate-section">
     <p
+      class="slide-up"
       style="margin-bottom: 1.5rem; line-height: 120%; letter-spacing: 0.00538rem;"
     >
       The Craftsmanship
     </p>
-    <h3 class="article-two-text">
+    <h3 class="article-two-text slide-up">
       AT THE HEART OF EVERY RUG ARE THE ARTISANS BEHIND THE CRAFT
     </h3>
-    <Image src={process6} alt="Process" height={590} id="article-two-image" />
-    <p class="article-two-text">
+    <div class="fade-in">
+      <Image src={process6} alt="Process" height={590} id="article-two-image" />
+    </div>
+    <p class="article-two-text slide-up">
       We are deeply committed to supporting our artisans and their communities.
       By preserving this age-old craft and providing sustainable livelihoods, we
       honor the rich traditions of weaving while empowering the skilled hands
@@ -201,6 +206,7 @@ import process6 from "../assets/Process/process6.png";
     }
 
     #article-two {
+      background-color: #f6f6f6;
       margin: 0;
       padding: 3rem 2.25rem;
       gap: 2.25rem;
@@ -253,10 +259,41 @@ import process6 from "../assets/Process/process6.png";
       display: block;
     }
   }
+
+  /* Add animation styles */
+  .slide-up,
+  .fade-in {
+    opacity: 0;
+    transition-duration: 0.8s;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+
+  .slide-up {
+    transform: translateY(30px);
+  }
+
+  .slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+  }
+
+  /* Wrapper for button to enable animation */
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Expandable content functionality
     const btns = document.querySelectorAll(".read-more-btn");
 
     btns.forEach((btn) => {
@@ -264,9 +301,72 @@ import process6 from "../assets/Process/process6.png";
         const expandableContent = document.querySelectorAll(
           ".expandable-content"
         );
-        expandableContent.forEach((a) => a.classList.add("expanded"));
+        expandableContent.forEach((a) => {
+          a.classList.add("expanded");
+          a.classList.add("visible"); // Also make newly visible content animated
+        });
         btn.style.display = "none";
       });
+    });
+
+    // Animation functionality
+    const animationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            animationObserver.unobserve(entry.target);
+
+            // If this is a section, find child elements to animate
+            if (entry.target.classList.contains("animate-section")) {
+              const animatableChildren = entry.target.querySelectorAll(
+                ".slide-up:not(.visible), .fade-in:not(.visible)"
+              );
+
+              // Animate children when parent section is visible
+              animatableChildren.forEach((child, index) => {
+                // Small progressive delay for natural flow
+                setTimeout(() => {
+                  child.classList.add("visible");
+                }, index * 100);
+              });
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -5% 0px",
+      }
+    );
+
+    // Select all primary animated elements (not in animate-sections)
+    const rootAnimatedElements = document.querySelectorAll(
+      ":not(.animate-section) > .slide-up, :not(.animate-section) > .fade-in, .animate-section"
+    );
+
+    // Observe each element
+    rootAnimatedElements.forEach((el) => {
+      animationObserver.observe(el);
+    });
+
+    // Handle animation of expandable content when it's displayed
+    const expandableContent = document.querySelectorAll(".expandable-content");
+    expandableContent.forEach((content) => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "class" &&
+            content.classList.contains("expanded") &&
+            !content.classList.contains("visible")
+          ) {
+            content.classList.add("visible");
+          }
+        });
+      });
+
+      observer.observe(content, { attributes: true });
     });
   });
 </script>

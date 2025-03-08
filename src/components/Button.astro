@@ -2,7 +2,7 @@
 const { text, link, color } = Astro.props;
 ---
 
-<a href={link} class="button">
+<a href={link} data-color={color}>
   {text}
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -41,6 +41,25 @@ const { text, link, color } = Astro.props;
     text-decoration: none;
   }
 
+  /* Animation styles */
+  .animate-button {
+    opacity: 0;
+    transform: translateY(15px);
+    transition:
+      opacity 0.7s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.7s cubic-bezier(0.33, 1, 0.68, 1),
+      backdrop-filter 0.3s ease;
+  }
+
+  .animate-button.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  a:hover {
+    backdrop-filter: brightness(1.2);
+  }
+
   @media screen and (max-width: 480px) {
     a {
       padding: 0.625rem 0.625rem 0.625rem 1.5rem;
@@ -54,3 +73,31 @@ const { text, link, color } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // Set up Intersection Observer for button animations
+  document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".animate-button");
+
+    if (buttons.length === 0) return;
+
+    const buttonObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            buttonObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: "0px 0px -5% 0px",
+      }
+    );
+
+    buttons.forEach((button) => {
+      buttonObserver.observe(button);
+    });
+  });
+</script>

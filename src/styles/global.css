@@ -82,14 +82,6 @@ pre {
   font-display: swap;
 }
 
-/* @font-face {
-  font-family: "General Sans";
-  src: url("/fonts/GeneralSans-Bold.otf") format("opentype");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-} */
-
 @font-face {
   font-family: "Cormorant Garamond";
   src: url("/fonts/CormorantGaramond-Light.ttf") format("truetype");
