@@ -3,20 +3,25 @@ import { Image } from "astro:assets";
 const { img1, img2, title, text, materials } = Astro.props;
 ---
 
-<article>
+<article class="product-card">
   <Image
     src={img1}
-    alt={title + "rug design"}
+    alt={title + " rug design"}
     width={400}
-    class="img1"
+    class="img1 slide-from-left"
     loading={title === "Festive" ? "eager" : "lazy"}
   />
-  <div id="info">
-    <h4>{title}</h4>
+  <div id="info" class="fade-in">
+    <h4 class="title-animate">{title}</h4>
     <p id="text">{text}</p>
     <p id="material">{materials}</p>
   </div>
-  <Image src={img2} alt={title + "rug inspiration"} width={400} class="img2" />
+  <Image
+    src={img2}
+    alt={title + " rug inspiration"}
+    width={400}
+    class="img2 slide-from-right"
+  />
 </article>
 
 <style>
@@ -61,6 +66,48 @@ const { img1, img2, title, text, materials } = Astro.props;
     line-height: 160%; /* 2rem */
   }
 
+  /* Animation styles */
+  .product-card .slide-from-left,
+  .product-card .slide-from-right,
+  .product-card .fade-in,
+  .product-card .title-animate {
+    opacity: 0.2;
+    transition:
+      opacity 0.9s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+
+  .product-card .slide-from-left {
+    transform: translateX(-30px);
+  }
+
+  .product-card .slide-from-right {
+    transform: translateX(30px);
+  }
+
+  .product-card .title-animate {
+    transform: translateY(15px);
+  }
+
+  /* Visible states */
+  .product-card.visible .slide-from-left,
+  .product-card.visible .slide-from-right,
+  .product-card.visible .fade-in,
+  .product-card.visible .title-animate {
+    opacity: 1;
+    transform: translate(0);
+  }
+
+  /* Subtle staggered animation for text content */
+  .product-card.visible #text {
+    transition-delay: 100ms;
+  }
+
+  .product-card.visible #material {
+    transition-delay: 200ms;
+  }
+
   @media screen and (max-width: 768px) {
     article {
       flex-direction: column;
@@ -89,5 +136,40 @@ const { img1, img2, title, text, materials } = Astro.props;
     p#text {
       white-space: inherit;
     }
+
+    /* Adjust animations for mobile */
+    .product-card .slide-from-left {
+      transform: translateY(20px);
+    }
   }
 </style>
+
+<script>
+  // Wait for the component to be mounted
+  document.addEventListener("DOMContentLoaded", () => {
+    // Set up animation observer
+    const productObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Add visible class to trigger animations
+            entry.target.classList.add("visible");
+
+            // Stop observing once animation is triggered
+            productObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.15, // Trigger when 15% of product is visible
+        rootMargin: "0px 0px -10% 0px", // Trigger slightly before product is fully visible
+      }
+    );
+
+    // Observe all product cards
+    const productCards = document.querySelectorAll(".product-card");
+    productCards.forEach((card) => {
+      productObserver.observe(card);
+    });
+  });
+</script>

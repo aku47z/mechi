@@ -61,15 +61,17 @@ import { Image } from "astro:assets";
         <div class="form-group">
           <label for="phone">Phone Number</label>
           <div class="phone-group">
-            <select name="countryCode" id="countryCode" required>
-              {
-                codes.map((code) => (
-                  <option value={`+${code.countryCodes}`}>
-                    {code.isoCode3} +{code.countryCodes}
-                  </option>
-                ))
-              }
-            </select>
+            <div id="select-wrapper">
+              <select name="Country Code" id="countryCode" required>
+                {
+                  codes.map((code) => (
+                    <option value={`+${code.countryCodes}`}>
+                      {code.isoCode3} +{code.countryCodes}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
             <input
               type="tel"
               id="phone"
@@ -180,6 +182,29 @@ import { Image } from "astro:assets";
     color: #717680;
   }
 
+  select {
+    appearance: none;
+  }
+
+  #select-wrapper {
+    position: relative;
+    margin-right: 5px;
+  }
+
+  #select-wrapper::after {
+    content: "⌄";
+    color: #717680;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.8rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    top: 8px;
+    right: 14px;
+    position: absolute;
+  }
+
   textarea {
     resize: none;
   }
@@ -189,12 +214,7 @@ import { Image } from "astro:assets";
   }
 
   .phone-group select {
-    width: 30%;
-    margin-right: 5px;
-  }
-
-  .phone-group input {
-    width: 70%;
+    width: max-content;
   }
 
   button {
@@ -204,10 +224,10 @@ import { Image } from "astro:assets";
     width: fit-content;
     height: fit-content;
     display: flex;
-    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+    padding: 0.625rem 0.625rem 0.625rem 1.5rem;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     cursor: pointer;
     /* text style */
     color: #1b1b1c;
@@ -270,8 +290,6 @@ import { Image } from "astro:assets";
     }
 
     button {
-      padding: 0.625rem 0.625rem 0.625rem 1.5rem;
-      gap: 0.5rem;
       font-size: 0.875rem;
     }
 

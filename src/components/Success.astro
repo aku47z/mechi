@@ -1,7 +1,6 @@
 ---
 import "@fontsource/montserrat/400.css";
-import { Image } from "astro:assets";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 ---
 
 <div id="modal">
@@ -15,7 +14,7 @@ import logo from "../assets/logo.svg";
       If you have any questions or need assistance, feel free to reach out to
       us.
     </p>
-    <Image src={logo} alt="logo" height={200} class="img" />
+    <img src={logo.src} alt="logo" height={200} class="img" />
     <p id="logo">
       MECHI SURSHAR
       <br />CARPET INDUSTRIES

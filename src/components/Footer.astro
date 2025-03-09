@@ -1,10 +1,9 @@
 ---
-import { Image } from "astro:assets";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 ---
 
 <footer>
-  <Image src={logo} alt="logo" height={310} class="img" />
+  <img src={logo.src} alt="logo" height={310} class="img" />
   <div id="sub-info">
     <h5>Address:</h5>
     <p>
@@ -38,7 +37,7 @@ import logo from "../assets/logo.svg";
     <p>
       <br />Designed by
       <a
-        href="https://www.linkedin.com/in/suneha-shrestha-1a730b243/"
+        href="https://www.instagram.com/the.doodle.studio?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
         style="font-weight: 400;"
       >
         The Doodle Studio
@@ -102,6 +101,8 @@ import logo from "../assets/logo.svg";
     min-width: 14rem;
   }
   .img {
+    margin-left: -50px;
+    margin-right: -50px;
     align-self: center;
   }
   a:hover {
@@ -115,8 +116,10 @@ import logo from "../assets/logo.svg";
     }
 
     .img {
-      max-width: 120px;
-      height: 180px;
+      margin-left: -30px;
+      margin-right: -30px;
+      width: 180px;
+      height: auto;
       align-self: flex-start;
     }
 

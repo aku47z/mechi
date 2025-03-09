@@ -236,7 +236,15 @@ export const codes = [
     isoCode3: "DMA",
   },
   {
-    countryCodes: ["1-809", "1-829", "1-849"],
+    countryCodes: ["1-809"],
+    isoCode3: "DOM",
+  },
+  {
+    countryCodes: ["1-829"],
+    isoCode3: "DOM",
+  },
+  {
+    countryCodes: ["1-849"],
     isoCode3: "DOM",
   },
   {
@@ -585,7 +593,7 @@ export const codes = [
   },
   {
     countryCodes: ["977"],
-    isoCode3: "NPL",
+    isoCode3: "NEP",
   },
   {
     countryCodes: ["31"],
@@ -680,7 +688,11 @@ export const codes = [
     isoCode3: "PRT",
   },
   {
-    countryCodes: ["1-787", "1-939"],
+    countryCodes: ["1-787"],
+    isoCode3: "PRI",
+  },
+  {
+    countryCodes: ["1-939"],
     isoCode3: "PRI",
   },
   {
