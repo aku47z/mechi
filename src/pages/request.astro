@@ -400,7 +400,7 @@ const images = [
     letter-spacing: 0.005rem;
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 768px) {
     #breadcrumbs svg {
       width: 16px;
       height: 16px;
@@ -415,7 +415,8 @@ const images = [
     form {
       margin-top: 2.25rem;
       max-width: 100%;
-      flex-direction: column-reverse;
+      flex-direction: column;
+      align-items: center;
       gap: 2.25rem;
     }
 
@@ -434,6 +435,11 @@ const images = [
     .mobile-img-container img {
       max-width: 100%;
       height: auto;
+    }
+
+    #input-container {
+      width: 100%;
+      max-width: none;
     }
 
     #contact-container {
