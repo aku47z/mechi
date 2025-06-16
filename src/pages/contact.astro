@@ -102,6 +102,8 @@ import { Image } from "astro:assets";
           style="display: none;"
         />
 
+        <div class="h-captcha" data-captcha="true"></div>
+
         <button type="submit">
           Submit
           <svg
@@ -123,6 +125,8 @@ import { Image } from "astro:assets";
     <Image src={contact1} alt="Contact Us" id="desktop-img" />
   </div>
   <Success />
+
+  <script src="https://web3forms.com/client/script.js" async defer></script>
 </Layout>
 
 <style>
