@@ -508,6 +508,7 @@ import ColorPicker from "../components/ColorPicker.astro";
 
 <script>
   const WORKER_URL = "https://image-upload-api.mingursurshar.workers.dev";
+  const WEB3FORMS_ACCESS_KEY = "ec85b88c-60af-409b-a128-55782096a560";
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("form") as HTMLFormElement;
@@ -525,14 +526,17 @@ import ColorPicker from "../components/ColorPicker.astro";
     const uploadedImageUrlInput = document.getElementById(
       "uploaded-image-url"
     ) as HTMLInputElement;
+    const uploadProgressText = document.querySelector(
+      ".upload-progress"
+    ) as HTMLElement;
 
-    let isImageUploaded = false;
+    let isImageUploaded = false; // Tracks if an image has been successfully uploaded to R2
 
     // Form submission handler
     form?.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      // Check if image is uploaded
+      // Validate that an image is uploaded if required
       if (!isImageUploaded || !uploadedImageUrlInput.value) {
         alert("Please upload an image before submitting the form.");
         return;
@@ -543,15 +547,47 @@ import ColorPicker from "../components/ColorPicker.astro";
       submitBtn.textContent = "Submitting...";
 
       try {
-        // Collect form data
+        // Collect form data using FormData and convert to a plain object
         const formData = new FormData(form);
-        const formObject = Object.fromEntries(formData);
+        const formObject: Record<string, any> = Object.fromEntries(formData);
 
-        // Add the uploaded image URL to the form data
-        formObject.image_url = uploadedImageUrlInput.value;
+        // Add the R2 uploaded image URL to the data for Web3Forms
+        formObject.image_url = `Uploaded Image URL: ${uploadedImageUrlInput.value}`;
 
-        // Submit to your worker's form submission endpoint
-        const response = await fetch(`${WORKER_URL}/api/submit-form`, {
+        // Add Web3Forms access key (essential for direct submission)
+        formObject.access_key = WEB3FORMS_ACCESS_KEY;
+
+        // Add custom fields for Web3Forms that are not direct inputs in this specific form
+        // (These often come from hidden inputs or logic in the original working form)
+        formObject.from_name = "Mechi Carpet Website"; // Or dynamically from a hidden input if available
+        formObject.subject = `Custom Rug Request from ${formObject.name}`; // Or from a hidden input
+
+        const requiredFields = [
+          "size",
+          "color",
+          "knot_count",
+          "name",
+          "email",
+          "message",
+        ];
+        const missingFields = requiredFields.filter(
+          (field) => !formObject[field]
+        );
+
+        if (missingFields.length > 0) {
+          alert(`Missing required fields: ${missingFields.join(", ")}`);
+          return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formObject.email)) {
+          alert("Invalid email format");
+          return;
+        }
+
+        // --- Submit directly to Web3Forms ---
+        const response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -560,32 +596,35 @@ import ColorPicker from "../components/ColorPicker.astro";
           body: JSON.stringify(formObject),
         });
 
-        const result = await response.json();
+        const result = await response.json(); // Web3Forms typically returns JSON
 
         if (response.ok && result.success) {
-          // Show success modal
-          modal?.classList.add("open");
-
-          // Reset form and upload state
-          form.reset();
-          resetUploadState();
+          modal?.classList.add("open"); // Show success modal
+          form.reset(); // Reset form
+          resetUploadState(); // Reset image upload preview/status
 
           console.log("Form submitted successfully:", result);
         } else {
-          throw new Error(result.error || "Form submission failed");
+          // Handle specific Web3Forms errors, e.g., result.message
+          console.error("Web3Forms submission failed:", result);
+          const errorMessage =
+            result.message || "Form submission failed. Please try again.";
+          alert(`Form submission failed: ${errorMessage}`);
         }
       } catch (error) {
         console.error("Form submission error:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Form submission failed";
-        alert(`Form submission failed: ${errorMessage}. Please try again.`);
+        alert(
+          `Form submission failed due to an unexpected error: ${errorMessage}.`
+        );
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText || "Submit";
       }
     });
 
-    // File upload handlers
+    // File upload handlers (remain the same, target your Worker)
     fileUpload?.addEventListener("change", function (e) {
       const target = e.target as HTMLInputElement;
       const files = target.files;
@@ -594,7 +633,7 @@ import ColorPicker from "../components/ColorPicker.astro";
       }
     });
 
-    // Drag and drop handlers
+    // Drag and drop handlers (remain the same)
     uploadBox?.addEventListener("dragover", function (e) {
       e.preventDefault();
       uploadBox.classList.add("drag-over");
@@ -613,7 +652,6 @@ import ColorPicker from "../components/ColorPicker.astro";
       if (files && files.length > 0) {
         const file = files[0];
         if (file.type.startsWith("image/")) {
-          // Update file input
           const dt = new DataTransfer();
           dt.items.add(file);
           fileUpload.files = dt.files;
@@ -625,14 +663,13 @@ import ColorPicker from "../components/ColorPicker.astro";
     });
 
     async function handleFileUpload(file: File) {
-      // Validate file size (frontend validation)
+      // Frontend validation
       if (file.size > 10 * 1024 * 1024) {
         alert("File size must be less than 10MB. Please compress your image.");
         fileUpload.value = "";
         return;
       }
 
-      // Validate file type (frontend validation)
       const allowedTypes = [
         "image/jpeg",
         "image/jpg",
@@ -650,15 +687,17 @@ import ColorPicker from "../components/ColorPicker.astro";
 
       // Show upload status
       uploadStatus.style.display = "block";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image...";
+      if (uploadProgressText) uploadProgressText.style.color = ""; // Reset color
       uploadBox.classList.add("uploading");
-      submitBtn.disabled = true;
+      submitBtn.disabled = true; // Disable submit during image upload
 
       try {
-        // Create FormData for upload
         const formData = new FormData();
         formData.append("file", file);
 
-        // Upload to worker
+        // Call your Cloudflare Worker for image upload
         const response = await fetch(`${WORKER_URL}/api/upload-image`, {
           method: "POST",
           body: formData,
@@ -667,23 +706,18 @@ import ColorPicker from "../components/ColorPicker.astro";
         const result = await response.json();
 
         if (response.ok && result.success) {
-          // Store the uploaded image URL
           uploadedImageUrlInput.value = result.imageUrl;
           isImageUploaded = true;
-
-          // Show preview
           showImagePreview(file);
 
           console.log("Image uploaded successfully:", result);
 
-          // Show success feedback
-          const uploadProgress = document.querySelector(".upload-progress");
-          if (uploadProgress) {
-            uploadProgress.textContent = "Image uploaded successfully!";
-            uploadProgress.style.color = "#28a745";
+          if (uploadProgressText) {
+            uploadProgressText.textContent = "Image uploaded successfully!";
+            uploadProgressText.style.color = "#28a745"; // Green success text
             setTimeout(() => {
               uploadStatus.style.display = "none";
-            }, 2000);
+            }, 2000); // Hide status after 2 seconds
           }
         } else {
           throw new Error(result.error || "Upload failed");
@@ -693,11 +727,11 @@ import ColorPicker from "../components/ColorPicker.astro";
         const errorMessage =
           error instanceof Error ? error.message : "Image upload failed";
         alert(`Image upload failed: ${errorMessage}. Please try again.`);
-        fileUpload.value = "";
-        resetUploadState();
+        fileUpload.value = ""; // Clear file input
+        resetUploadState(); // Reset visual state on error
       } finally {
         uploadBox.classList.remove("uploading");
-        submitBtn.disabled = !isImageUploaded; // Keep disabled if no image uploaded
+        submitBtn.disabled = !isImageUploaded; // Re-enable submit if image is now uploaded
       }
     }
 
@@ -731,6 +765,8 @@ import ColorPicker from "../components/ColorPicker.astro";
       isImageUploaded = false;
       uploadedImageUrlInput.value = "";
       uploadStatus.style.display = "none";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image..."; // Reset text
 
       const previewImage = document.querySelector(
         ".preview-image"
@@ -743,6 +779,7 @@ import ColorPicker from "../components/ColorPicker.astro";
       if (previewImage) previewImage.style.display = "none";
       if (uploadContent) uploadContent.style.display = "flex";
       if (uploadHint) uploadHint.textContent = "Click to upload image";
+      submitBtn.disabled = !isImageUploaded; // Disable if no image
     }
 
     // Color picker functionality
@@ -752,11 +789,15 @@ import ColorPicker from "../components/ColorPicker.astro";
     });
 
     // Modal close handler
-    modal?.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.classList.remove("open");
-      }
-    });
+    modal?.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === modal) {
+          modal.classList.remove("open");
+        }
+      },
+      { once: true }
+    ); // Use once: true to avoid multiple listeners
 
     // Initialize form state
     submitBtn.disabled = !isImageUploaded;
