@@ -536,7 +536,6 @@ import ColorPicker from "../components/ColorPicker.astro";
       ".upload-content"
     ) as HTMLElement;
     const uploadHint = document.querySelector(".upload-hint") as HTMLElement;
-
     let isImageUploaded = false;
     submitBtn.disabled = true;
 
@@ -710,7 +709,158 @@ import ColorPicker from "../components/ColorPicker.astro";
       }
     });
 
-    // ... (rest of the script, handleFileUpload, showImagePreview, resetUploadState, color picker, modal, initial state)
+    // File upload handlers (no changes)
+    fileUpload?.addEventListener("change", function (e) {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      if (files && files[0]) {
+        handleFileUpload(files[0]);
+      }
+    });
+
+    uploadBox?.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      uploadBox.classList.add("drag-over");
+    });
+
+    uploadBox?.addEventListener("dragleave", function (e) {
+      e.preventDefault();
+      uploadBox.classList.remove("drag-over");
+    });
+
+    uploadBox?.addEventListener("drop", function (e) {
+      e.preventDefault();
+      uploadBox.classList.remove("drag-over");
+
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith("image/")) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileUpload.files = dt.files;
+          handleFileUpload(file);
+        } else {
+          alert("Please upload an image file.");
+        }
+      }
+    });
+
+    async function handleFileUpload(file: File) {
+      const MAX_FILE_SIZE = 10 * 1024 * 1024;
+      if (file.size > MAX_FILE_SIZE) {
+        alert("File size must be less than 10MB. Please compress your image.");
+        fileUpload.value = "";
+        return;
+      }
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        alert(
+          "Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed."
+        );
+        fileUpload.value = "";
+        return;
+      }
+
+      uploadStatus.style.display = "block";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image...";
+      if (uploadProgressText) uploadProgressText.style.color = "";
+      uploadBox.classList.add("uploading");
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${WORKER_BASE_URL}/api/upload-image`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          uploadedImageUrlInput.value = result.imageUrl;
+          isImageUploaded = true;
+          showImagePreview(file);
+
+          console.log("Image uploaded successfully to D2:", result);
+
+          if (uploadProgressText) {
+            uploadProgressText.textContent = "Image uploaded successfully!";
+            uploadProgressText.style.color = "#28a745";
+            setTimeout(() => {
+              uploadStatus.style.display = "none";
+            }, 2000);
+          }
+        } else {
+          throw new Error(result.error || "Upload failed");
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Image upload failed";
+        alert(`Image upload failed: ${errorMessage}. Please try again.`);
+        fileUpload.value = "";
+        resetUploadState();
+      } finally {
+        uploadBox.classList.remove("uploading");
+        submitBtn.disabled = !isImageUploaded;
+      }
+    }
+
+    function showImagePreview(file: File) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        if (previewImage && uploadContent && e.target?.result) {
+          previewImage.src = e.target.result as string;
+          previewImage.style.display = "block";
+          uploadContent.style.display = "none";
+        }
+        if (uploadHint) {
+          uploadHint.textContent = file.name;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetUploadState() {
+      isImageUploaded = false;
+      uploadedImageUrlInput.value = "";
+      uploadStatus.style.display = "none";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image...";
+
+      if (previewImage) previewImage.style.display = "none";
+      if (uploadContent) uploadContent.style.display = "flex";
+      if (uploadHint) uploadHint.textContent = "Click to upload image";
+      submitBtn.disabled = true;
+    }
+
+    // Color picker functionality
+    const colorPickerBtn = document.getElementById("color-picker-btn");
+    colorPickerBtn?.addEventListener("click", () => {
+      (window as any).openColorModal();
+    });
+
+    // Modal close handler
+    modal?.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === modal) {
+          modal.classList.remove("open");
+        }
+      },
+      { once: true }
+    );
 
     // Initial state check
     if (fileUpload.files && fileUpload.files.length > 0) {
