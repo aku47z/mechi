@@ -1,0 +1,872 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Success from "../components/Success.astro";
+import ColorPicker from "../components/ColorPicker.astro";
+---
+
+<Layout
+  title="Custom Sample Request"
+  description="Give us your custom design and ideas and our team will create a unique Tibetan rug with you."
+>
+  <Navbar />
+
+  <div id="req-form">
+    <div id="breadcrumbs">
+      <a href="/product">Product</a>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        class="chevron-right"
+      >
+        <path
+          d="M6 12L10 8L6 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+
+      <a href="/request">Request Sample</a>
+    </div>
+
+    <h3>CUSTOMIZATION MADE EASY</h3>
+
+    <p class="desktop-only">
+      Send us your custom request, our team will create a free digital rendering
+      and send you a quotation within 2 business days.
+    </p>
+
+    <form id="form">
+      <div id="input-container" class="mobile-img-container">
+        <div id="upload-image">
+          <p id="upload-text">Upload your file here</p>
+
+          <div class="upload-box">
+            <input
+              type="file"
+              id="file-upload"
+              name="attachment"
+              accept="image/*"
+              required
+              style="display: none;"
+            />
+
+            <label for="file-upload" class="upload-label">
+              <div class="upload-content">
+                <div class="plus-icon">+</div>
+                <span class="upload-hint">Click to upload image</span>
+              </div>
+              <img class="preview-image" style="display: none;" alt="Preview" />
+            </label>
+          </div>
+
+          <p class="help-text">The file size should be less than 10MB.</p>
+
+          <!-- Upload status indicator -->
+          <div id="upload-status" style="display: none;">
+            <p class="upload-progress">Uploading image...</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="input-container">
+        <!-- Hidden field to store the uploaded image URL -->
+        <input type="hidden" id="uploaded-image-url" name="image_url" />
+
+        <div class="form-group">
+          <label for="size">Rug Size (in ft.)</label>
+          <input
+            type="number"
+            id="size"
+            name="size"
+            required
+            placeholder="Enter size"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="color">Select color from color chart</label>
+          <button
+            type="button"
+            id="color-picker-btn"
+            class="color-picker-button"
+          >
+            <span id="selected-colors">Click to select colors</span>
+          </button>
+          <input type="hidden" id="color" name="color" required />
+        </div>
+
+        <div class="form-group">
+          <label for="knot_count">Knot Count</label>
+          <div class="select-wrapper">
+            <select id="knot" name="knot_count" required>
+              <option value="" disabled selected>Select desired count</option>
+              <option value="60-Lux">60 - Lux</option>
+              <option value="100-Premium">100 - Premium</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="Your Name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            maxlength="500"
+            required
+            placeholder="Your message"></textarea>
+          <p class="help-text">Maximum 500 characters.</p>
+        </div>
+
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="hidden"
+          style="display: none;"
+        />
+
+        <div class="h-captcha" data-captcha="true"></div>
+
+        <button type="submit" id="submit-btn">
+          Submit
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="55"
+            viewBox="0 0 49 48"
+            fill="none"
+          >
+            <circle cx="24.5" cy="24" r="23.5" stroke="#000"></circle>
+            <path
+              d="M31.8646 17.636C31.8646 17.0837 31.4169 16.636 30.8646 16.636L21.8646 16.636C21.3124 16.636 20.8646 17.0837 20.8646 17.636C20.8646 18.1883 21.3124 18.636 21.8646 18.636L29.8646 18.636L29.8646 26.636C29.8646 27.1883 30.3124 27.636 30.8646 27.636C31.4169 27.636 31.8646 27.1883 31.8646 26.636L31.8646 17.636ZM18.8438 31.0711L31.5717 18.3431L30.1575 16.9289L17.4296 29.6568L18.8438 31.0711Z"
+              fill="#000"></path>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <ColorPicker />
+    <Success />
+  </div>
+
+  <script src="https://web3forms.com/client/script.js" async defer></script>
+</Layout>
+
+<style>
+  #breadcrumbs {
+    margin-bottom: 1rem;
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: #1b1b1c;
+    text-align: center;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+  }
+
+  #breadcrumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #breadcrumbs a:hover {
+    text-decoration: underline;
+  }
+
+  #req-form {
+    border-top: 1px solid rgba(0, 0, 0, 0.7);
+    width: 100%;
+    padding: 8rem 5rem;
+  }
+
+  h3 {
+    max-width: 50rem;
+    margin-bottom: 1.5rem;
+  }
+
+  form {
+    max-width: 1400px;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+  }
+
+  #input-container {
+    max-width: 36rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  label {
+    display: block;
+    color: #414651;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    align-self: stretch;
+    border-radius: 0.5rem;
+    border: 1px solid var(--Gray-300, #d5d7da);
+    background: var(--White, #fff);
+    box-shadow: 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5rem;
+    color: #717680;
+  }
+
+  select {
+    appearance: none;
+  }
+
+  .select-wrapper {
+    position: relative;
+    margin-right: 5px;
+  }
+
+  .select-wrapper::after {
+    content: "⌄";
+    color: #717680;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.8rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    top: 8px;
+    right: 14px;
+    position: absolute;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  button {
+    background-color: #f6f6f6;
+    border-radius: 5rem;
+    border: 1px solid #bababa;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    padding: 0.625rem 0.625rem 0.625rem 1.5rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.005rem;
+    text-decoration: none;
+  }
+
+  button:hover {
+    background-color: #fff;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  #upload-image {
+    aspect-ratio: 1;
+    padding: 1.5rem;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  #upload-text {
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 120%;
+    letter-spacing: 0.00625rem;
+  }
+
+  .upload-box {
+    width: 70%;
+    aspect-ratio: 1;
+    border: 2px dashed #d5d7da;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .upload-box:hover {
+    border-color: #717680;
+  }
+
+  .upload-box.drag-over {
+    border-color: #414651;
+    background-color: #f8f9fa;
+  }
+
+  .upload-box.uploading {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+
+  .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+  }
+
+  .upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .plus-icon {
+    font-size: 3rem;
+    color: #717680;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-hint {
+    color: #717680;
+    font-family: "General Sans", sans-serif;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .help-text {
+    font-size: 0.75em;
+    color: #666;
+  }
+
+  .upload-progress {
+    color: #007bff;
+    font-family: "General Sans", sans-serif;
+    font-size: 0.875rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .color-picker-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d5d7da;
+    background: #fff;
+    color: #717680;
+    font-family: "General Sans", sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .color-picker-button:hover {
+    border-color: #717680;
+  }
+
+  @media screen and (max-width: 768px) {
+    #breadcrumbs svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    #req-form {
+      border-top: 0.5px solid rgba(0, 0, 0, 0.7);
+      width: 100%;
+      padding: 3rem 2.25rem;
+    }
+
+    form {
+      margin-top: 2.25rem;
+      max-width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.25rem;
+    }
+
+    h3 {
+      margin-bottom: 0;
+    }
+
+    .desktop-only {
+      display: none;
+    }
+
+    .mobile-img-container {
+      display: block;
+    }
+
+    .mobile-img-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    #input-container {
+      width: 100%;
+      max-width: none;
+      margin-top: 0;
+    }
+
+    input,
+    select,
+    textarea,
+    label,
+    #selected-colors {
+      font-size: 0.875rem;
+    }
+
+    button {
+      font-size: 0.875rem;
+    }
+
+    svg {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+</style>
+
+<script>
+  const WORKER_BASE_URL = "https://image-upload-api.mingursurshar.workers.dev";
+  const WEB3FORMS_ACCESS_KEY = "ec85b88c-60af-409b-a128-55782096a560";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("form") as HTMLFormElement;
+    const modal = document.getElementById("modal");
+    const fileUpload = document.getElementById(
+      "file-upload"
+    ) as HTMLInputElement;
+    const uploadBox = document.querySelector(".upload-box") as HTMLElement;
+    const uploadStatus = document.getElementById(
+      "upload-status"
+    ) as HTMLElement;
+    const submitBtn = document.getElementById(
+      "submit-btn"
+    ) as HTMLButtonElement;
+    const uploadedImageUrlInput = document.getElementById(
+      "uploaded-image-url"
+    ) as HTMLInputElement;
+    const uploadProgressText = document.querySelector(
+      ".upload-progress"
+    ) as HTMLElement;
+    const previewImage = document.querySelector(
+      ".preview-image"
+    ) as HTMLImageElement;
+    const uploadContent = document.querySelector(
+      ".upload-content"
+    ) as HTMLElement;
+    const uploadHint = document.querySelector(".upload-hint") as HTMLElement;
+    let isImageUploaded = false;
+    submitBtn.disabled = true;
+
+    // Form submission handler
+    form?.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!isImageUploaded || !uploadedImageUrlInput.value) {
+        alert("Please upload an image before submitting the form.");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Submitting...";
+
+      try {
+        const formData = new FormData(form);
+        const formObject: Record<string, any> = {};
+        formData.forEach((value, key) => {
+          formObject[key] = typeof value === "string" ? value : String(value);
+        });
+        formObject.image_url = uploadedImageUrlInput.value;
+
+        // --- Frontend Validation (including hCaptcha token check) ---
+        const requiredFields = [
+          "size",
+          "color",
+          "knot_count",
+          "name",
+          "email",
+          "message",
+          "image_url",
+        ];
+        const missingFields = requiredFields.filter(
+          (field) => !formObject[field]
+        );
+        if (missingFields.length > 0) {
+          alert(`Missing required fields: ${missingFields.join(", ")}`);
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText || "Submit";
+          return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formObject.email)) {
+          alert("Invalid email format");
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText || "Submit";
+          return;
+        }
+
+        // --- CAPTURE HCAPTCHA TOKEN HERE ---
+        // The Web3Forms client script often makes `hcaptcha` available globally.
+        // It provides a function to get the token.
+        let hcaptchaToken = "";
+        if (typeof hcaptcha !== "undefined") {
+          hcaptchaToken = hcaptcha.getResponse();
+          if (!hcaptchaToken) {
+            alert("Please complete the hCaptcha verification.");
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText || "Submit";
+            return;
+          }
+        } else {
+          console.warn(
+            "hCaptcha script not loaded or 'hcaptcha' global object not found."
+          );
+          // Decide how to handle this: either make hCaptcha mandatory or optional.
+          // For now, if the error says it's mandatory, it must be present.
+          // If you intend for hCaptcha to be optional on the client, you'd remove this check.
+        }
+        // --- END CAPTCHA TOKEN CAPTURE ---
+
+        // --- STEP 1: Submit full form data to YOUR Cloudflare Worker for D2 storage ---
+        // This payload DOES NOT need the hCaptcha token, as your Worker isn't verifying it.
+        const workerResponse = await fetch(
+          `${WORKER_BASE_URL}/api/submit-form`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(formObject),
+          }
+        );
+
+        const workerResult = await workerResponse.json();
+
+        if (!workerResponse.ok || !workerResult.success) {
+          console.error("Worker (D2 storage) submission failed:", workerResult);
+          const errorMessage =
+            workerResult.error || "Data storage failed. Please try again.";
+          alert(`Form submission failed: ${errorMessage}`);
+          // Reset hCaptcha if it failed to submit or there was an error in worker submission
+          if (typeof hcaptcha !== "undefined") {
+            hcaptcha.reset();
+          }
+          return;
+        }
+
+        console.log("Form data saved to D2:", workerResult);
+
+        // --- STEP 2: Send simplified notification to Web3Forms ---
+        const dashboardLink = workerResult.dashboardLink;
+        const submitterEmail = formObject.email;
+        const submitterName = formObject.name;
+
+        const w3formsNotificationPayload = {
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Submission from ${submitterName}`,
+          email: submitterEmail,
+          message: `A new form submission has been received from ${submitterName}. Please visit the dashboard for full details: ${dashboardLink}`,
+          "h-captcha-response": hcaptchaToken, // <-- ADD THE HCAPTCHA TOKEN HERE
+        };
+
+        const w3formsResponse = await fetch(
+          "https://api.web3forms.com/submit",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(w3formsNotificationPayload),
+          }
+        );
+
+        const w3formsResult = await w3formsResponse.json();
+
+        // Reset hCaptcha after trying to submit it, regardless of success, to allow a new attempt
+        if (typeof hcaptcha !== "undefined") {
+          hcaptcha.reset();
+        }
+
+        if (w3formsResponse.ok && w3formsResult.success) {
+          console.log(
+            "Web3Forms notification sent successfully:",
+            w3formsResult
+          );
+          modal?.classList.add("open");
+          form.reset();
+          resetUploadState();
+        } else {
+          console.error("Web3Forms notification failed:", w3formsResult);
+          const notificationErrorMessage =
+            w3formsResult.message || "Notification could not be sent.";
+          alert(
+            `Form submitted, but notification failed: ${notificationErrorMessage}`
+          );
+          // Still show success modal for the main form submission (D2 storage)
+          modal?.classList.add("open");
+          form.reset();
+          resetUploadState();
+        }
+      } catch (error) {
+        console.error("Overall form submission process error:", error);
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred during submission.";
+        alert(
+          `Form submission failed due to an unexpected error: ${errorMessage}.`
+        );
+        if (typeof hcaptcha !== "undefined") {
+          hcaptcha.reset(); // Reset hCaptcha on any general submission error
+        }
+      } finally {
+        submitBtn.disabled = !isImageUploaded;
+        submitBtn.textContent = originalText || "Submit";
+      }
+    });
+
+    // File upload handlers (no changes)
+    fileUpload?.addEventListener("change", function (e) {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      if (files && files[0]) {
+        handleFileUpload(files[0]);
+      }
+    });
+
+    uploadBox?.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      uploadBox.classList.add("drag-over");
+    });
+
+    uploadBox?.addEventListener("dragleave", function (e) {
+      e.preventDefault();
+      uploadBox.classList.remove("drag-over");
+    });
+
+    uploadBox?.addEventListener("drop", function (e) {
+      e.preventDefault();
+      uploadBox.classList.remove("drag-over");
+
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith("image/")) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileUpload.files = dt.files;
+          handleFileUpload(file);
+        } else {
+          alert("Please upload an image file.");
+        }
+      }
+    });
+
+    async function handleFileUpload(file: File) {
+      const MAX_FILE_SIZE = 10 * 1024 * 1024;
+      if (file.size > MAX_FILE_SIZE) {
+        alert("File size must be less than 10MB. Please compress your image.");
+        fileUpload.value = "";
+        return;
+      }
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        alert(
+          "Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed."
+        );
+        fileUpload.value = "";
+        return;
+      }
+
+      uploadStatus.style.display = "block";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image...";
+      if (uploadProgressText) uploadProgressText.style.color = "";
+      uploadBox.classList.add("uploading");
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${WORKER_BASE_URL}/api/upload-image`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          uploadedImageUrlInput.value = result.imageUrl;
+          isImageUploaded = true;
+          showImagePreview(file);
+
+          console.log("Image uploaded successfully to D2:", result);
+
+          if (uploadProgressText) {
+            uploadProgressText.textContent = "Image uploaded successfully!";
+            uploadProgressText.style.color = "#28a745";
+            setTimeout(() => {
+              uploadStatus.style.display = "none";
+            }, 2000);
+          }
+        } else {
+          throw new Error(result.error || "Upload failed");
+        }
+      } catch (error) {
+        console.error("Image upload error:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Image upload failed";
+        alert(`Image upload failed: ${errorMessage}. Please try again.`);
+        fileUpload.value = "";
+        resetUploadState();
+      } finally {
+        uploadBox.classList.remove("uploading");
+        submitBtn.disabled = !isImageUploaded;
+      }
+    }
+
+    function showImagePreview(file: File) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        if (previewImage && uploadContent && e.target?.result) {
+          previewImage.src = e.target.result as string;
+          previewImage.style.display = "block";
+          uploadContent.style.display = "none";
+        }
+        if (uploadHint) {
+          uploadHint.textContent = file.name;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetUploadState() {
+      isImageUploaded = false;
+      uploadedImageUrlInput.value = "";
+      uploadStatus.style.display = "none";
+      if (uploadProgressText)
+        uploadProgressText.textContent = "Uploading image...";
+
+      if (previewImage) previewImage.style.display = "none";
+      if (uploadContent) uploadContent.style.display = "flex";
+      if (uploadHint) uploadHint.textContent = "Click to upload image";
+      submitBtn.disabled = true;
+    }
+
+    // Color picker functionality
+    const colorPickerBtn = document.getElementById("color-picker-btn");
+    colorPickerBtn?.addEventListener("click", () => {
+      (window as any).openColorModal();
+    });
+
+    // Modal close handler
+    modal?.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === modal) {
+          modal.classList.remove("open");
+        }
+      },
+      { once: true }
+    );
+
+    // Initial state check
+    if (fileUpload.files && fileUpload.files.length > 0) {
+      handleFileUpload(fileUpload.files[0]);
+    } else {
+      submitBtn.disabled = true;
+    }
+  });
+</script>

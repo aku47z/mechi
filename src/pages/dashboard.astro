@@ -1,0 +1,989 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+---
+
+<Layout
+  title="Form Submissions Dashboard"
+  description="View and manage custom rug request submissions"
+>
+  <Navbar />
+
+  <div id="dashboard">
+    <div class="dashboard-header">
+      <h1>Form Submissions</h1>
+      <div class="header-actions">
+        <button id="refresh-btn" class="action-btn">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C9.5 3 7.26 4.04 5.64 5.64"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+            <path
+              d="M3 3V9H9"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          Refresh
+        </button>
+        <div class="submissions-count">
+          <span id="total-count">0</span> submissions
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-state" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading submissions...</p>
+    </div>
+
+    <div id="error-state" class="error-container" style="display: none;">
+      <div class="error-icon">⚠️</div>
+      <h3>Failed to load submissions</h3>
+      <p id="error-message">Please try refreshing the page.</p>
+      <button id="retry-btn" class="retry-btn">Try Again</button>
+    </div>
+
+    <div id="empty-state" class="empty-container" style="display: none;">
+      <div class="empty-icon">📝</div>
+      <h3>No submissions yet</h3>
+      <p>Custom rug requests will appear here when submitted.</p>
+    </div>
+
+    <div id="submissions-container" style="display: none;">
+      <div class="submissions-sidebar">
+        <div class="sidebar-header">
+          <h3>Submissions</h3>
+          <div class="filter-controls">
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Search by name or email..."
+            />
+            <select id="sort-select">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name">Sort by Name</option>
+              <option value="email">Sort by Email</option>
+            </select>
+          </div>
+        </div>
+        <div id="submissions-list" class="submissions-list"></div>
+      </div>
+
+      <div class="submission-detail">
+        <div id="detail-placeholder" class="detail-placeholder">
+          <div class="placeholder-icon">👆</div>
+          <h3>Select a submission</h3>
+          <p>Choose a submission from the list to view details</p>
+        </div>
+
+        <div id="detail-content" class="detail-content" style="display: none;">
+          <div class="detail-header">
+            <div class="submission-info">
+              <h4 id="detail-name">Loading...</h4>
+              <p id="detail-email">Loading...</p>
+              <span id="detail-date" class="date-badge">Loading...</span>
+            </div>
+          </div>
+
+          <div class="detail-body">
+            <div class="detail-section">
+              <h4>Uploaded Image</h4>
+              <div class="image-container">
+                <img id="detail-image" src="" alt="Uploaded design" />
+                <a
+                  id="detail-image-link"
+                  href=""
+                  target="_blank"
+                  class="image-link">View Full Size</a
+                >
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Rug Specifications</h4>
+              <div class="specs-grid">
+                <div class="spec-item">
+                  <label>Size (ft.)</label>
+                  <span id="detail-size">-</span>
+                </div>
+                <div class="spec-item">
+                  <label>Colors</label>
+                  <span id="detail-color">-</span>
+                </div>
+                <div class="spec-item">
+                  <label>Knot Count</label>
+                  <span id="detail-knot">-</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Message</h4>
+              <div class="message-content">
+                <p id="detail-message">-</p>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Technical Information</h4>
+              <div class="tech-info">
+                <div class="tech-item">
+                  <label>Submission ID</label>
+                  <span id="detail-id" class="monospace">-</span>
+                </div>
+                <div class="tech-item">
+                  <label>IP Address</label>
+                  <span id="detail-ip" class="monospace">-</span>
+                </div>
+                <div class="tech-item">
+                  <label>User Agent</label>
+                  <span id="detail-user-agent" class="small-text">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style is:global>
+    #dashboard {
+      min-height: calc(100vh - 80px);
+      background-color: #f8f9fa;
+      padding: 2rem;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header h1 {
+      margin: 0;
+      color: #1b1b1c;
+      font-family: "General Sans", sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d5d7da;
+      border-radius: 8px;
+      background: white;
+      color: #414651;
+      font-family: "General Sans", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #f8f9fa;
+      border-color: #717680;
+    }
+
+    .action-btn.secondary {
+      background: #f8f9fa;
+    }
+
+    .submissions-count {
+      color: #717680;
+      font-family: "General Sans", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .loading-container,
+    .error-container,
+    .empty-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-icon,
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .retry-btn {
+      padding: 0.75rem 1.5rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: "General Sans", sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    #submissions-container {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 2rem;
+      height: calc(100vh - 200px);
+    }
+
+    .submissions-sidebar {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .sidebar-header h3 {
+      margin: 0 0 1rem 0;
+      color: #1b1b1c;
+      font-family: "General Sans", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .filter-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    #search-input,
+    #sort-select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d5d7da;
+      border-radius: 6px;
+      font-family: "General Sans", sans-serif;
+      font-size: 0.875rem;
+    }
+
+    .submissions-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .submission-item {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #f1f3f4;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .submission-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .submission-item.selected {
+      background-color: #e3f2fd;
+      border-right: 3px solid #007bff;
+    }
+
+    .submission-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .submission-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .submission-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .submission-name {
+      font-weight: 600;
+      color: #1b1b1c;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .submission-email {
+      color: #717680;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .submission-date {
+      color: #717680;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .submission-detail {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #717680;
+    }
+
+    .placeholder-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-header {
+      font-size: 1rem;
+      padding: 2rem;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .detail-header p {
+      margin: 0 0 0.75rem 0;
+      color: #717680;
+      font-size: 1rem;
+    }
+
+    .date-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: #f8f9fa;
+      color: #717680;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .detail-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .detail-section {
+      margin-bottom: 2rem;
+    }
+
+    .detail-section h4 {
+      margin: 0 0 1rem 0;
+      color: #1b1b1c;
+      font-family: "General Sans", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .image-container {
+      text-align: center;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+    }
+
+    .image-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .image-link:hover {
+      text-decoration: underline;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .spec-item,
+    .tech-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .spec-item label,
+    .tech-item label {
+      color: #717680;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .spec-item span,
+    .tech-item span {
+      color: #1b1b1c;
+      font-weight: 500;
+    }
+
+    .message-content {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .message-content p {
+      margin: 0;
+      color: #1b1b1c;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .tech-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .monospace {
+      font-family: "Courier New", monospace;
+      font-size: 0.875rem;
+    }
+
+    .small-text {
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    @media screen and (max-width: 1024px) {
+      #dashboard {
+        padding: 1rem;
+      }
+
+      #submissions-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .submissions-sidebar {
+        max-height: 400px;
+      }
+
+      .dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .detail-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .detail-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .specs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    const WORKER_BASE_URL =
+      "https://image-upload-api.mingursurshar.workers.dev"; // Replace with your actual Worker URL
+
+    interface Submission {
+      id: string;
+      name: string;
+      email: string;
+      timestamp: string;
+      size?: string;
+      color?: string;
+      knot_count?: string;
+      message?: string;
+      image_url?: string;
+      ip_address?: string;
+      user_agent?: string;
+      rug_size?: string;
+      rug_color?: string;
+      rug_knot_count?: string;
+    }
+
+    let allSubmissions: Submission[] = [];
+    let filteredSubmissions: Submission[] = [];
+    let selectedSubmissionId: string | null = null;
+
+    // DOM Elements
+    const loadingState = document.getElementById("loading-state")!;
+    const errorState = document.getElementById("error-state")!;
+    const emptyState = document.getElementById("empty-state")!;
+    const submissionsContainer = document.getElementById(
+      "submissions-container"
+    )!;
+    const submissionsList = document.getElementById("submissions-list")!;
+    const totalCountEl = document.getElementById("total-count")!;
+    const searchInput = document.getElementById(
+      "search-input"
+    ) as HTMLInputElement;
+    const sortSelect = document.getElementById(
+      "sort-select"
+    ) as HTMLSelectElement;
+    const refreshBtn = document.getElementById("refresh-btn")!;
+    const retryBtn = document.getElementById("retry-btn")!;
+    const detailPlaceholder = document.getElementById("detail-placeholder")!;
+    const detailContent = document.getElementById("detail-content")!;
+
+    // Detail elements
+    const detailName = document.getElementById("detail-name")!;
+    const detailEmail = document.getElementById("detail-email")!;
+    const detailDate = document.getElementById("detail-date")!;
+    const detailImage = document.getElementById(
+      "detail-image"
+    ) as HTMLImageElement;
+    const detailImageLink = document.getElementById(
+      "detail-image-link"
+    ) as HTMLAnchorElement;
+    const detailSize = document.getElementById("detail-size")!;
+    const detailColor = document.getElementById("detail-color")!;
+    const detailKnot = document.getElementById("detail-knot")!;
+    const detailMessage = document.getElementById("detail-message")!;
+    const detailId = document.getElementById("detail-id")!;
+    const detailIp = document.getElementById("detail-ip")!;
+    const detailUserAgent = document.getElementById("detail-user-agent")!;
+
+    // Initialize dashboard
+    document.addEventListener("DOMContentLoaded", () => {
+      loadSubmissions();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      refreshBtn.addEventListener("click", loadSubmissions);
+      retryBtn.addEventListener("click", loadSubmissions);
+
+      searchInput.addEventListener("input", handleSearch);
+      sortSelect.addEventListener("change", handleSort);
+    }
+
+    async function loadSubmissions() {
+      showLoading();
+
+      try {
+        const response = await fetch(`${WORKER_BASE_URL}/api/submissions`);
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || "Failed to load submissions");
+        }
+
+        // Fetch detailed information for each submission
+        const detailedSubmissions = await Promise.all(
+          result.submissions.map(async (sub: any) => {
+            try {
+              const detailResponse = await fetch(
+                `${WORKER_BASE_URL}/api/submissions/${sub.id}`
+              );
+              const detailResult = await detailResponse.json();
+
+              if (detailResponse.ok && detailResult.success) {
+                return detailResult.submission;
+              }
+              return sub; // fallback to basic info if detail fetch fails
+            } catch (err) {
+              console.error(`Failed to fetch details for ${sub.id}:`, err);
+              return sub;
+            }
+          })
+        );
+
+        allSubmissions = detailedSubmissions;
+        applyFiltersAndSort(); // Apply any existing search/sort on fresh data
+
+        updateTotalCount();
+
+        if (allSubmissions.length === 0) {
+          showEmptyState();
+        } else {
+          renderSubmissions();
+          showSubmissionsContainer();
+          // If a submission was previously selected, try to re-select it
+          if (selectedSubmissionId) {
+            const reselect = allSubmissions.find(
+              (s) => s.id === selectedSubmissionId
+            );
+            if (reselect) {
+              selectSubmission(selectedSubmissionId);
+            } else {
+              // If the previously selected submission is no longer available, clear detail view
+              clearDetailView();
+            }
+          } else {
+            clearDetailView();
+          }
+        }
+      } catch (error) {
+        console.error("Error loading submissions:", error);
+        showError(
+          error instanceof Error ? error.message : "Failed to load submissions"
+        );
+      }
+    }
+
+    function showLoading() {
+      loadingState.style.display = "flex";
+      errorState.style.display = "none";
+      emptyState.style.display = "none";
+      submissionsContainer.style.display = "none";
+    }
+
+    function showError(message: string) {
+      const errorMessage = document.getElementById("error-message")!;
+      errorMessage.textContent = message;
+
+      loadingState.style.display = "none";
+      errorState.style.display = "flex";
+      emptyState.style.display = "none";
+      submissionsContainer.style.display = "none";
+    }
+
+    function showEmptyState() {
+      loadingState.style.display = "none";
+      errorState.style.display = "none";
+      emptyState.style.display = "flex";
+      submissionsContainer.style.display = "none";
+    }
+
+    function showSubmissionsContainer() {
+      loadingState.style.display = "none";
+      errorState.style.display = "none";
+      emptyState.style.display = "none";
+      submissionsContainer.style.display = "grid";
+    }
+
+    function updateTotalCount() {
+      totalCountEl.textContent = allSubmissions.length.toString();
+    }
+
+    function renderSubmissions() {
+      submissionsList.innerHTML = "";
+
+      if (
+        filteredSubmissions.length === 0 &&
+        (searchInput.value || sortSelect.value !== "newest")
+      ) {
+        // Show a message if filters result in no submissions
+        const noResults = document.createElement("div");
+        noResults.className = "empty-container";
+        noResults.innerHTML = `<div class="empty-icon">😔</div><h3>No matching submissions found</h3><p>Adjust your search or filters.</p>`;
+        submissionsList.appendChild(noResults);
+        return;
+      }
+
+      filteredSubmissions.forEach((submission) => {
+        const item = createSubmissionItem(submission);
+        submissionsList.appendChild(item);
+      });
+
+      // Ensure the currently selected item remains highlighted after re-render
+      if (selectedSubmissionId) {
+        document
+          .querySelector(`.submission-item[data-id="${selectedSubmissionId}"]`)
+          ?.classList.add("selected");
+      }
+    }
+
+    function formatValue(value?: string) {
+      return value && value.trim() !== "" ? value : "N/A";
+    }
+
+    function createSubmissionItem(submission: Submission): HTMLElement {
+      const item = document.createElement("div");
+      item.className = "submission-item";
+      item.dataset.id = submission.id;
+
+      const avatar = getInitials(formatValue(submission.name));
+      const date = formatDate(submission.timestamp);
+
+      item.innerHTML = `
+        <div class="submission-preview">
+          <div class="submission-avatar">${avatar}</div>
+          <div class="submission-info">
+            <div class="submission-name">${escapeHtml(formatValue(submission.name))}</div>
+            <div class="submission-email">${escapeHtml(formatValue(submission.email))}</div>
+          </div>
+          <div class="submission-date">${date}</div>
+        </div>
+      `;
+
+      item.addEventListener("click", () => selectSubmission(submission.id));
+
+      return item;
+    }
+
+    function getInitials(name: string): string {
+      if (name === "N/A" || !name) return "?";
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+
+    function formatDate(timestamp: string): string {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+      if (diffInHours < 24) {
+        return date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } else if (diffInHours < 168) {
+        // 7 days
+        return date.toLocaleDateString([], { weekday: "short" });
+      } else {
+        return date.toLocaleDateString([], { month: "short", day: "numeric" });
+      }
+    }
+
+    function escapeHtml(text: string): string {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function selectSubmission(submissionId: string) {
+      // Update UI selection
+      document.querySelectorAll(".submission-item").forEach((item) => {
+        item.classList.toggle("selected", item.dataset.id === submissionId);
+      });
+
+      selectedSubmissionId = submissionId;
+
+      // Show loading in detail view
+      detailPlaceholder.style.display = "none";
+      detailContent.style.display = "block";
+      detailName.textContent = "Loading...";
+      detailEmail.textContent = "Loading...";
+      detailDate.textContent = "Loading...";
+      detailImage.src = "";
+      detailImage.style.display = "none";
+      detailImageLink.href = "";
+      detailImageLink.style.display = "none";
+      detailSize.textContent = "-";
+      detailColor.textContent = "-";
+      detailKnot.textContent = "-";
+      detailMessage.textContent = "-";
+      detailId.textContent = "-";
+      detailIp.textContent = "-";
+      detailUserAgent.textContent = "-";
+
+      try {
+        const response = await fetch(
+          `${WORKER_BASE_URL}/api/submissions/${submissionId}`
+        );
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || "Failed to load submission details");
+        }
+
+        displaySubmissionDetails(result.submission);
+      } catch (error) {
+        console.error("Error loading submission details:", error);
+        detailName.textContent = "Error loading submission";
+        detailEmail.textContent =
+          error instanceof Error ? error.message : "Unknown error";
+        detailDate.textContent = ""; // Clear date on error
+      }
+    }
+
+    function displaySubmissionDetails(submission: Submission) {
+      detailName.textContent = formatValue(submission.name);
+      detailEmail.textContent = formatValue(submission.email);
+      detailDate.textContent = new Date(submission.timestamp).toLocaleString();
+
+      if (submission.image_url) {
+        detailImage.src = submission.image_url;
+        detailImage.style.display = "block";
+        detailImageLink.href = submission.image_url;
+        detailImageLink.style.display = "inline";
+      } else {
+        detailImage.style.display = "none";
+        detailImageLink.style.display = "none";
+      }
+
+      // Check for rug specification fields. Using `??` for nullish coalescing.
+      // Assuming your form submission stores them as `rug_size`, `rug_color`, `rug_knot_count`
+      detailSize.textContent = submission.rug_size ?? submission.size ?? "-";
+      detailColor.textContent = submission.rug_color ?? submission.color ?? "-";
+      detailKnot.textContent =
+        submission.rug_knot_count ?? submission.knot_count ?? "-";
+      detailMessage.textContent = submission.message || "-";
+      detailId.textContent = submission.id;
+      detailIp.textContent = submission.ip_address || "-";
+      detailUserAgent.textContent = submission.user_agent || "-";
+    }
+
+    function clearDetailView() {
+      detailPlaceholder.style.display = "flex";
+      detailContent.style.display = "none";
+      selectedSubmissionId = null;
+      document.querySelectorAll(".submission-item").forEach((item) => {
+        item.classList.remove("selected");
+      });
+    }
+
+    function handleSearch() {
+      applyFiltersAndSort();
+      renderSubmissions();
+    }
+
+    function handleSort() {
+      applyFiltersAndSort();
+      renderSubmissions();
+    }
+
+    function applyFiltersAndSort() {
+      let tempSubmissions = [...allSubmissions];
+
+      // 1. Apply Search Filter
+      const query = searchInput.value.toLowerCase();
+      if (query) {
+        tempSubmissions = tempSubmissions.filter(
+          (submission) =>
+            formatValue(submission.name).toLowerCase().includes(query) ||
+            formatValue(submission.email).toLowerCase().includes(query)
+        );
+      }
+
+      // 2. Apply Sort Order
+      const sortOption = sortSelect.value;
+      switch (sortOption) {
+        case "newest":
+          tempSubmissions.sort(
+            (a, b) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
+          break;
+        case "oldest":
+          tempSubmissions.sort(
+            (a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
+          break;
+        case "name":
+          tempSubmissions.sort((a, b) =>
+            formatValue(a.name).localeCompare(formatValue(b.name))
+          );
+          break;
+        case "email":
+          tempSubmissions.sort((a, b) =>
+            formatValue(a.email).localeCompare(formatValue(b.email))
+          );
+          break;
+      }
+
+      filteredSubmissions = tempSubmissions;
+    }
+  </script>
+</Layout>

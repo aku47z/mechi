@@ -1,0 +1,272 @@
+---
+import { colors } from "../constants/colors.ts";
+
+export interface Props {
+  id?: string;
+}
+
+const { id = "color-modal" } = Astro.props;
+---
+
+<!-- Color Picker Modal -->
+<div id={id} class="color-modal">
+  <div class="color-modal-content">
+    <h4>COLOR CHART WITH LABELS</h4>
+
+    <div class="color-grid">
+      {
+        colors.map((color) => (
+          <label class="color-option">
+            <input type="checkbox" name="colors" value={color.value} />
+            <span class="color-circle" style={`background: ${color.hex};`} />
+            <span class="color-label">{color.value}</span>
+          </label>
+        ))
+      }
+    </div>
+    <div class="color-modal-footer">
+      <button type="button" class="uncheck-all">Uncheck All</button>
+      <button type="button" class="done-button">Done</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .color-modal {
+    font-family: "General Sans", sans-serif;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .color-modal.open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .color-modal-content {
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .color-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  h4 {
+    text-align: center;
+    padding: 1.5rem;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #717680;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .uncheck-all {
+    background: none;
+    border: 1px solid #656569;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #656569;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .uncheck-all:hover {
+    background-color: #f8f9fa;
+    border-color: #717680;
+  }
+
+  .color-grid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(20, 0.5fr);
+    gap: 0.5rem;
+  }
+
+  .color-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .color-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .color-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .color-option input[type="checkbox"]:checked + .color-circle::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: snow;
+    font-size: 1rem;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .color-label {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    color: #414651;
+    font-weight: 500;
+  }
+
+  .color-modal-footer {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .apply-colors {
+    background-color: #1b1b1c;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .apply-colors:hover {
+    background-color: #656569;
+  }
+
+  .done-button {
+    background-color: #1b1b1c;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .done-button:hover {
+    background-color: #414651;
+  }
+
+  @media screen and (max-width: 768px) {
+    .color-grid {
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(20, 1fr);
+      grid-auto-flow: column;
+      gap: 0.5rem;
+    }
+
+    .color-circle {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .color-modal-content {
+      width: 95%;
+      margin: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .color-circle {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .color-label {
+      font-size: 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Color picker functionality
+  const colorModal = document.getElementById("color-modal");
+  const uncheckAll = document.querySelector(".uncheck-all");
+  const doneButton = document.querySelector(".done-button");
+
+  uncheckAll?.addEventListener("click", () => {
+    const colorCheckboxes = document.querySelectorAll('input[name="colors"]');
+    colorCheckboxes.forEach((checkbox) => {
+      (checkbox as HTMLInputElement).checked = false;
+    });
+    updateSelectedColors();
+  });
+
+  doneButton?.addEventListener("click", () => {
+    colorModal?.classList.remove("open");
+  });
+
+  colorModal?.addEventListener("click", (e) => {
+    if (e.target === colorModal) {
+      colorModal.classList.remove("open");
+    }
+  });
+
+  // Add event listeners to all color checkboxes for immediate updates
+  const colorCheckboxes = document.querySelectorAll('input[name="colors"]');
+  colorCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", updateSelectedColors);
+  });
+
+  function updateSelectedColors() {
+    const selectedColors = Array.from(
+      document.querySelectorAll('input[name="colors"]:checked')
+    ).map((input) => (input as HTMLInputElement).value);
+
+    const selectedColorsSpan = document.getElementById("selected-colors");
+    const colorInput = document.getElementById("color");
+
+    if (selectedColors.length > 0) {
+      selectedColorsSpan!.textContent = selectedColors.join(", ");
+      colorInput!.value = selectedColors.join(", ");
+    } else {
+      selectedColorsSpan!.textContent = "Click to select colors";
+      colorInput!.value = "";
+    }
+  }
+
+  // Export function to open modal
+  window.openColorModal = () => {
+    colorModal?.classList.add("open");
+  };
+</script>
