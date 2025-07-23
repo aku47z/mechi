@@ -1,0 +1,385 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Client Dashboard">
+  <div class="dashboard-container">
+    <h2>Client Submissions Dashboard</h2>
+
+    <div id="submissions-list">
+      <p>Loading submissions...</p>
+    </div>
+  </div>
+
+  <div id="submission-details-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="modal-close-button">&times;</span>
+      <div id="submission-details-content"></div>
+    </div>
+  </div>
+
+  <script client:load>
+    interface Submission {
+      id: string;
+      email: string;
+      name: string;
+      timestamp: string;
+    }
+
+    let submissions: Submission[] = [];
+    let selectedSubmission: any | null = null;
+    let isLoading = true;
+    let error: string | null = null;
+
+    const WORKER_BASE_URL =
+      "https://image-upload-api.mingursurshar.workers.dev";
+
+    // Function to fetch all submissions
+    async function fetchSubmissions() {
+      isLoading = true;
+      error = null;
+      try {
+        const response = await fetch(`${WORKER_BASE_URL}/api/submissions`);
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          submissions = result.submissions;
+        } else {
+          error = result.error || "Failed to load submissions.";
+          console.error("Error fetching submissions:", result);
+        }
+      } catch (err) {
+        error = "Network error or failed to connect to API.";
+        console.error("Fetch submissions caught error:", err);
+      } finally {
+        isLoading = false;
+        renderSubmissions(); // Call render function after state update
+      }
+    }
+
+    // Function to fetch a single submission's details
+    async function fetchSubmissionDetails(id: string) {
+      selectedSubmission = null; // Clear previous selection
+      try {
+        const response = await fetch(
+          `${WORKER_BASE_URL}/api/submissions/${id}`
+        );
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          selectedSubmission = result.submission;
+        } else {
+          alert(result.error || "Failed to load submission details.");
+          console.error("Error fetching submission details:", result);
+        }
+      } catch (err) {
+        alert("Network error or failed to connect to API for details.");
+        console.error("Fetch submission details caught error:", err);
+      } finally {
+        renderSubmissionDetailsModal(); // Call render function after state update
+      }
+    }
+
+    // Function to render the list of submissions
+    function renderSubmissions() {
+      const container = document.getElementById("submissions-list");
+      if (!container) return;
+
+      container.innerHTML = ""; // Clear previous content
+
+      if (isLoading) {
+        container.innerHTML = "<p>Loading submissions...</p>";
+        return;
+      }
+
+      if (error) {
+        container.innerHTML = `<p class="error-message">Error: ${error}</p>`;
+        return;
+      }
+
+      if (submissions.length === 0) {
+        container.innerHTML = "<p>No submissions found yet.</p>";
+        return;
+      }
+
+      const table = document.createElement("table");
+      table.className = "submissions-table";
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector("tbody");
+
+      submissions.forEach((sub) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${sub.id.substring(0, 8)}...</td>
+          <td>${sub.name || "N/A"}</td>
+          <td>${sub.email || "N/A"}</td>
+          <td>${new Date(sub.timestamp).toLocaleString()}</td>
+          <td><button class="view-details-btn" data-id="${sub.id}">View Details</button></td>
+        `;
+        tbody?.appendChild(row);
+      });
+
+      container.appendChild(table);
+
+      // Add event listeners to "View Details" buttons
+      container.querySelectorAll(".view-details-btn").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          const id = (event.target as HTMLButtonElement).dataset.id;
+          if (id) {
+            fetchSubmissionDetails(id);
+          }
+        });
+      });
+    }
+
+    // Function to render the details modal
+    function renderSubmissionDetailsModal() {
+      const modal = document.getElementById("submission-details-modal");
+      const modalContent = document.getElementById(
+        "submission-details-content"
+      );
+      if (!modal || !modalContent) return;
+
+      if (selectedSubmission) {
+        modalContent.innerHTML = `
+          <h3>Submission Details (ID: ${selectedSubmission.id.substring(0, 8)}...)</h3>
+          <pre>${JSON.stringify(selectedSubmission, null, 2)}</pre>
+          <button id="close-modal-btn">Close</button>
+        `;
+        modal.classList.add("open");
+
+        // Attach event listener to the specific close button within the dynamic content
+        document.getElementById("close-modal-btn")?.addEventListener(
+          "click",
+          () => {
+            modal.classList.remove("open");
+            selectedSubmission = null; // Clear selection on close
+          },
+          { once: true } // Ensure listener is only added once
+        );
+      } else {
+        modal.classList.remove("open");
+      }
+    }
+
+    // Event listener for the modal's static close button (the 'x')
+    document
+      .getElementById("modal-close-button")
+      ?.addEventListener("click", () => {
+        const modal = document.getElementById("submission-details-modal");
+        if (modal) {
+          modal.classList.remove("open");
+          selectedSubmission = null; // Clear selection on close
+        }
+      });
+
+    // Event listener to close modal when clicking outside content
+    document
+      .getElementById("submission-details-modal")
+      ?.addEventListener("click", (event) => {
+        const modal = document.getElementById("submission-details-modal");
+        if (modal && event.target === modal) {
+          modal.classList.remove("open");
+          selectedSubmission = null; // Clear selection on close
+        }
+      });
+
+    // Initial fetch when the DOM is ready
+    document.addEventListener("DOMContentLoaded", fetchSubmissions);
+  </script>
+</Layout>
+
+<style>
+  /* Your existing CSS styles go here */
+  .dashboard-container {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+  }
+
+  .submissions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to table content */
+  }
+
+  .submissions-table th,
+  .submissions-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-family: "General Sans", sans-serif;
+    color: #414651;
+  }
+
+  .submissions-table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+    color: #1b1b1c;
+    text-transform: uppercase;
+    font-size: 0.9em;
+  }
+
+  .submissions-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .submissions-table tbody tr:hover {
+    background-color: #f0f0f0;
+  }
+
+  .submissions-table button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s ease;
+  }
+
+  .submissions-table button:hover {
+    background-color: #0056b3;
+  }
+
+  .error-message {
+    color: #dc3545;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 2rem;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal.open {
+    display: flex;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-content h3 {
+    margin-top: 0;
+    color: #1b1b1c;
+    font-family: "General Sans", sans-serif;
+  }
+
+  .modal-content pre {
+    background-color: #eee;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
+    word-wrap: break-word; /* Break long words */
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+
+  .modal-content #close-modal-btn {
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .modal-content #close-modal-btn:hover {
+    background-color: #5a6268;
+  }
+
+  .close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+  }
+
+  .close-button:hover,
+  .close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 2rem 1rem;
+    }
+
+    .submissions-table th,
+    .submissions-table td {
+      padding: 8px 10px;
+      font-size: 0.8em;
+    }
+
+    .submissions-table button {
+      padding: 6px 10px;
+      font-size: 0.75em;
+    }
+
+    .modal-content {
+      width: 95%;
+      padding: 15px;
+    }
+
+    .modal-content pre {
+      font-size: 0.8em;
+      padding: 10px;
+    }
+  }
+</style>
