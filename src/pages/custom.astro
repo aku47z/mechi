@@ -508,7 +508,7 @@ import ColorPicker from "../components/ColorPicker.astro";
 
 <script>
   const WORKER_BASE_URL = "https://image-upload-api.mingursurshar.workers.dev";
-  const WEB3FORMS_ACCESS_KEY = "ec85b88c-60af-409b-a128-55782096a560";
+  const WEB3FORMS_ACCESS_KEY = import.meta.env.PUBLIC_API_KEY;
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("form") as HTMLFormElement;
@@ -639,8 +639,6 @@ import ColorPicker from "../components/ColorPicker.astro";
 
         console.log("Form data saved to D2:", workerResult);
 
-        // --- STEP 2: Send simplified notification to Web3Forms ---
-        const dashboardLink = workerResult.dashboardLink;
         const submitterEmail = formObject.email;
         const submitterName = formObject.name;
 
@@ -648,8 +646,8 @@ import ColorPicker from "../components/ColorPicker.astro";
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `New Submission from ${submitterName}`,
           email: submitterEmail,
-          message: `A new form submission has been received from ${submitterName}. Please visit the dashboard for full details: ${dashboardLink}`,
-          "h-captcha-response": hcaptchaToken, // <-- ADD THE HCAPTCHA TOKEN HERE
+          message: `Custom Request received from ${submitterName}. View details on https://mechicarpet.com/dashboard`,
+          "h-captcha-response": hcaptchaToken,
         };
 
         const w3formsResponse = await fetch(
