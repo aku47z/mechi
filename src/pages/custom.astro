@@ -507,8 +507,7 @@ import ColorPicker from "../components/ColorPicker.astro";
 </style>
 
 <script>
-  const WORKER_URL = "https://image-upload-api.mingursurshar.workers.dev";
-  const WEB3FORMS_ACCESS_KEY = "ec85b88c-60af-409b-a128-55782096a560";
+  const WORKER_BASE_URL = "https://image-upload-api.mingursurshar.workers.dev";
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("form") as HTMLFormElement;
@@ -531,19 +530,23 @@ import ColorPicker from "../components/ColorPicker.astro";
     ) as HTMLElement;
     const previewImage = document.querySelector(
       ".preview-image"
-    ) as HTMLImageElement;
+    ) as HTMLImageElement; // Added for clarity
     const uploadContent = document.querySelector(
       ".upload-content"
-    ) as HTMLElement;
-    const uploadHint = document.querySelector(".upload-hint") as HTMLElement;
+    ) as HTMLElement; // Added for clarity
+    const uploadHint = document.querySelector(".upload-hint") as HTMLElement; // Added for clarity
 
-    let isImageUploaded = false;
+    let isImageUploaded = false; // Tracks if an image has been successfully uploaded to R2
+
+    // Initialize submit button state based on whether an image is already "uploaded" (e.g., if re-editing)
+    // For a fresh form, it should start disabled.
     submitBtn.disabled = true;
 
-    // Form submission handler - NOW SUBMITS TO YOUR WORKER *THEN* WEB3FORMS
+    // Form submission handler - NOW SUBMITS TO YOUR WORKER
     form?.addEventListener("submit", async function (e) {
       e.preventDefault();
 
+      // Ensure an image has been uploaded to D2 before submitting the form
       if (!isImageUploaded || !uploadedImageUrlInput.value) {
         alert("Please upload an image before submitting the form.");
         return;
@@ -554,14 +557,18 @@ import ColorPicker from "../components/ColorPicker.astro";
       submitBtn.textContent = "Submitting...";
 
       try {
+        // Collect ALL form data into a plain object
         const formData = new FormData(form);
         const formObject: Record<string, any> = {};
         formData.forEach((value, key) => {
+          // Ensure values are strings for simple object conversion
           formObject[key] = typeof value === "string" ? value : String(value);
         });
+
+        // Add the uploaded image URL to the main form data payload
         formObject.image_url = uploadedImageUrlInput.value;
 
-        // Frontend Validation (should mirror backend for UX)
+        // --- Frontend Validation (should ideally mirror backend for better UX) ---
         const requiredFields = [
           "size",
           "color",
@@ -569,17 +576,20 @@ import ColorPicker from "../components/ColorPicker.astro";
           "name",
           "email",
           "message",
-          "image_url",
+          "image_url", // Image URL is now a required field for the form submission itself
         ];
         const missingFields = requiredFields.filter(
           (field) => !formObject[field]
         );
+
         if (missingFields.length > 0) {
           alert(`Missing required fields: ${missingFields.join(", ")}`);
           submitBtn.disabled = false;
           submitBtn.textContent = originalText || "Submit";
           return;
         }
+
+        // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formObject.email)) {
           alert("Invalid email format");
@@ -587,98 +597,49 @@ import ColorPicker from "../components/ColorPicker.astro";
           submitBtn.textContent = originalText || "Submit";
           return;
         }
-        // END Frontend Validation
+        // --- END Frontend Validation ---
 
-        // --- STEP 1: Submit full form data to YOUR Cloudflare Worker for D2 storage ---
-        const workerResponse = await fetch(
-          `${WORKER_BASE_URL}/api/submit-form`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(formObject),
-          }
-        );
+        // --- Submit to YOUR Cloudflare Worker's /api/submit-form endpoint ---
+        const response = await fetch(`${WORKER_BASE_URL}/api/submit-form`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(formObject), // Send the entire formObject as JSON
+        });
 
-        const workerResult = await workerResponse.json();
+        const result = await response.json(); // Your Worker will return JSON
 
-        if (!workerResponse.ok || !workerResult.success) {
-          console.error("Worker (D2 storage) submission failed:", workerResult);
-          const errorMessage =
-            workerResult.error || "Data storage failed. Please try again.";
-          alert(`Form submission failed: ${errorMessage}`);
-          return; // Stop here if D2 storage failed
-        }
+        if (response.ok && result.success) {
+          modal?.classList.add("open"); // Show success modal
+          form.reset(); // Reset form
+          resetUploadState(); // Reset image upload preview/status
 
-        console.log("Form data saved to D2:", workerResult);
-
-        // --- STEP 2: Send simplified notification to Web3Forms ---
-        // Get the dashboard link from the Worker's response
-        const dashboardLink = workerResult.dashboardLink;
-        const submitterEmail = formObject.email;
-        const submitterName = formObject.name;
-
-        const w3formsNotificationPayload = {
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New Submission from ${submitterName}`,
-          email: submitterEmail,
-          message: `A new form submission has been received from ${submitterName}. Please visit the dashboard for full details: ${dashboardLink}`,
-        };
-
-        const w3formsResponse = await fetch(
-          "https://api.web3forms.com/submit",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(w3formsNotificationPayload),
-          }
-        );
-
-        const w3formsResult = await w3formsResponse.json();
-
-        if (w3formsResponse.ok && w3formsResult.success) {
-          console.log(
-            "Web3Forms notification sent successfully:",
-            w3formsResult
-          );
-          // Show success modal only after BOTH steps are complete
-          modal?.classList.add("open");
-          form.reset();
-          resetUploadState();
+          console.log("Form submitted successfully (via Worker):", result);
+          // You might display result.dashboardLink to the user if you want
+          // e.g., alert(`Success! Your submission ID is ${result.submissionId}. View it at: ${result.dashboardLink}`);
         } else {
-          console.error("Web3Forms notification failed:", w3formsResult);
-          // Alert that notification failed, but data is saved (important distinction)
-          const notificationErrorMessage =
-            w3formsResult.message || "Notification could not be sent.";
-          alert(
-            `Form submitted, but notification failed: ${notificationErrorMessage}`
-          );
-          // Still show success modal for the main form submission (D2 storage)
-          modal?.classList.add("open");
-          form.reset();
-          resetUploadState();
+          // Handle errors returned by your Worker
+          console.error("Worker submission failed:", result);
+          const errorMessage =
+            result.error || "Form submission failed. Please try again.";
+          alert(`Form submission failed: ${errorMessage}`);
         }
       } catch (error) {
-        console.error("Overall form submission process error:", error);
+        console.error("Overall form submission error (to Worker):", error);
         const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred during submission.";
+          error instanceof Error ? error.message : "Form submission failed";
         alert(
           `Form submission failed due to an unexpected error: ${errorMessage}.`
         );
       } finally {
-        submitBtn.disabled = !isImageUploaded;
+        submitBtn.disabled = !isImageUploaded; // Re-enable if image is present, otherwise disabled
         submitBtn.textContent = originalText || "Submit";
       }
     });
 
-    // File upload handlers (no changes)
+    // File upload handlers (remain the same, target your Worker's /api/upload-image)
     fileUpload?.addEventListener("change", function (e) {
       const target = e.target as HTMLInputElement;
       const files = target.files;
@@ -687,6 +648,7 @@ import ColorPicker from "../components/ColorPicker.astro";
       }
     });
 
+    // Drag and drop handlers (remain the same)
     uploadBox?.addEventListener("dragover", function (e) {
       e.preventDefault();
       uploadBox.classList.add("drag-over");
@@ -716,7 +678,8 @@ import ColorPicker from "../components/ColorPicker.astro";
     });
 
     async function handleFileUpload(file: File) {
-      const MAX_FILE_SIZE = 10 * 1024 * 1024;
+      // Frontend validation (matches Worker's validation for better UX)
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
       if (file.size > MAX_FILE_SIZE) {
         alert("File size must be less than 10MB. Please compress your image.");
         fileUpload.value = "";
@@ -738,17 +701,19 @@ import ColorPicker from "../components/ColorPicker.astro";
         return;
       }
 
+      // Show upload status
       uploadStatus.style.display = "block";
       if (uploadProgressText)
         uploadProgressText.textContent = "Uploading image...";
-      if (uploadProgressText) uploadProgressText.style.color = "";
+      if (uploadProgressText) uploadProgressText.style.color = ""; // Reset color
       uploadBox.classList.add("uploading");
-      submitBtn.disabled = true;
+      submitBtn.disabled = true; // Disable submit during image upload
 
       try {
         const formData = new FormData();
         formData.append("file", file);
 
+        // Call your Cloudflare Worker for image upload
         const response = await fetch(`${WORKER_BASE_URL}/api/upload-image`, {
           method: "POST",
           body: formData,
@@ -765,24 +730,24 @@ import ColorPicker from "../components/ColorPicker.astro";
 
           if (uploadProgressText) {
             uploadProgressText.textContent = "Image uploaded successfully!";
-            uploadProgressText.style.color = "#28a745";
+            uploadProgressText.style.color = "#28a745"; // Green success text
             setTimeout(() => {
               uploadStatus.style.display = "none";
-            }, 2000);
+            }, 2000); // Hide status after 2 seconds
           }
         } else {
-          throw new Error(result.error || "Upload failed");
+          throw new Error(result.error || "Image upload failed");
         }
       } catch (error) {
         console.error("Image upload error:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Image upload failed";
         alert(`Image upload failed: ${errorMessage}. Please try again.`);
-        fileUpload.value = "";
-        resetUploadState();
+        fileUpload.value = ""; // Clear file input
+        resetUploadState(); // Reset visual state on error
       } finally {
         uploadBox.classList.remove("uploading");
-        submitBtn.disabled = !isImageUploaded;
+        submitBtn.disabled = !isImageUploaded; // Re-enable submit if image is now uploaded
       }
     }
 
@@ -794,6 +759,7 @@ import ColorPicker from "../components/ColorPicker.astro";
           previewImage.style.display = "block";
           uploadContent.style.display = "none";
         }
+
         if (uploadHint) {
           uploadHint.textContent = file.name;
         }
@@ -806,12 +772,12 @@ import ColorPicker from "../components/ColorPicker.astro";
       uploadedImageUrlInput.value = "";
       uploadStatus.style.display = "none";
       if (uploadProgressText)
-        uploadProgressText.textContent = "Uploading image...";
+        uploadProgressText.textContent = "Uploading image..."; // Reset text
 
       if (previewImage) previewImage.style.display = "none";
       if (uploadContent) uploadContent.style.display = "flex";
       if (uploadHint) uploadHint.textContent = "Click to upload image";
-      submitBtn.disabled = true;
+      submitBtn.disabled = true; // Always disable submit button if no image is uploaded
     }
 
     // Color picker functionality
@@ -831,10 +797,11 @@ import ColorPicker from "../components/ColorPicker.astro";
       { once: true }
     );
 
-    // Initial state check
+    // Initial state check: if a file is already selected (e.g., browser restore), try to process it
     if (fileUpload.files && fileUpload.files.length > 0) {
       handleFileUpload(fileUpload.files[0]);
     } else {
+      // Ensure submit button is disabled on page load if no file is present
       submitBtn.disabled = true;
     }
   });
