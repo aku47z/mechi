@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Card from "../components/Card.astro";
 import Button from "../components/Button.astro";
+import Popup from "../components/Popup.astro";
 import { Image, getImage } from "astro:assets";
 import home1 from "../assets/Homepage/Home 1.jpeg";
 import home2 from "../assets/Homepage/Home 2.png";
@@ -130,13 +131,13 @@ const elevate = await getImage({ src: home10 });
     <h2 id="elevate-text" class="slide-up">
       ELEVATE YOUR SPACE WITH OUR CARPETS
     </h2>
-    <Button
-      link="/product"
-      text="View our collection"
-      color="#ffffff"
-      class="slide-up"
-    />
+    <div id="elevate-buttons" class="slide-up">
+      <Button link="/product" text="View our collection" color="#ffffff" />
+      <Button link="/custom" text="Request a custom sample" color="#ffffff" />
+    </div>
   </section>
+
+  <Popup />
 </Layout>
 
 <style>
@@ -293,6 +294,13 @@ const elevate = await getImage({ src: home10 });
     max-width: 45rem;
   }
 
+  #elevate-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
   /* Refined animation styles */
   .slide-up,
   .fade-in {
@@ -416,9 +424,14 @@ const elevate = await getImage({ src: home10 });
 
     #elevate {
       height: 768px;
-      padding-bottom: 120px;
+      padding-bottom: 100px;
       gap: 0.5rem;
       justify-content: flex-end;
+    }
+
+    #elevate-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
     }
   }
 
@@ -464,7 +477,7 @@ const elevate = await getImage({ src: home10 });
     #elevate {
       padding: 2rem 1rem;
       margin-bottom: 0;
-      height: 330px;
+      height: 480px;
     }
 
     #elevate-text {
@@ -514,64 +527,61 @@ const elevate = await getImage({ src: home10 });
     // Observe all sections
     animateSections.forEach((section) => sectionObserver.observe(section));
 
-    // Special handling for card animations
-    const cardsContainer = document.getElementById("cards");
-    if (cardsContainer) {
-      const cards = cardsContainer.querySelectorAll(".card");
+    // Popup modal functionality
+    const modal = document.getElementById("modal");
+    const header = document.querySelector("header");
+    let hasShownModal = false;
 
-      const cardsObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              // Add visible class to container
-              cardsContainer.classList.add("visible");
-
-              // Stagger individual cards
-              cards.forEach((card, index) => {
-                card.style.transitionDelay = `${index * 180}ms`;
-              });
-
-              cardsObserver.unobserve(cardsContainer);
-            }
-          });
-        },
-        {
-          threshold: 0.2,
-          rootMargin: "0px 0px -10% 0px",
-        }
-      );
-
-      cardsObserver.observe(cardsContainer);
+    // Check if user has already seen the modal in this session
+    if (sessionStorage.getItem("modalShown")) {
+      hasShownModal = true;
     }
 
-    // Special handling for legacy images
-    const legacyImages = document.getElementById("legacy-images");
-    if (legacyImages) {
-      const images = legacyImages.querySelectorAll(".image-wrapper");
+    // Observer to detect when user scrolls past header
+    const headerObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // When header is no longer intersecting (user scrolled past it)
+          if (!entry.isIntersecting && !hasShownModal) {
+            // Add a small delay to make it feel more natural
+            setTimeout(() => {
+              if (modal) {
+                modal.style.display = "flex";
+                // Trigger animation after display is set
+                requestAnimationFrame(() => {
+                  modal.classList.add("open");
+                });
+              }
+              hasShownModal = true;
+              sessionStorage.setItem("modalShown", "true");
+            }, 500);
 
-      const imagesObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              // Add visible class to container
-              legacyImages.classList.add("visible");
+            // Stop observing once modal is shown
+            headerObserver.unobserve(header);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0,
+        rootMargin: "0px 0px 0px 0px",
+      }
+    );
 
-              // Stagger individual images
-              images.forEach((img, index) => {
-                img.style.transitionDelay = `${index * 150}ms`;
-              });
-
-              imagesObserver.unobserve(legacyImages);
-            }
-          });
-        },
-        {
-          threshold: 0.2,
-          rootMargin: "0px 0px -10% 0px",
-        }
-      );
-
-      imagesObserver.observe(legacyImages);
+    // Start observing the header
+    if (header && !hasShownModal) {
+      headerObserver.observe(header);
     }
+
+    // Close modal when clicking outside
+    modal?.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.classList.remove("open");
+        // Hide modal after animation completes
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 400);
+      }
+    });
   });
 </script>

@@ -78,14 +78,24 @@ import ColorPicker from "../components/ColorPicker.astro";
         <input type="hidden" id="uploaded-image-url" name="image_url" />
 
         <div class="form-group">
-          <label for="size">Rug Size (in ft.)</label>
-          <input
-            type="number"
-            id="size"
-            name="size"
-            required
-            placeholder="Enter size"
-          />
+          <label for="size">Rug Dimensions (in ft.)</label>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input
+              type="number"
+              id="width"
+              name="width"
+              required
+              placeholder="Enter size"
+            />
+            <p>x</p>
+            <input
+              type="number"
+              id="height"
+              name="height"
+              required
+              placeholder="Enter size"
+            />
+          </div>
         </div>
 
         <div class="form-group">
@@ -169,11 +179,19 @@ import ColorPicker from "../components/ColorPicker.astro";
               fill="#000"></path>
           </svg>
         </button>
+        <p
+          style=" border-top: 1px solid #000; padding-top: 0.5rem; padding-left:0.25rem;"
+        >
+          You can also
+          <a href="/request" style="color: inherit;"
+            >request one of our existing samples.</a
+          >
+        </p>
       </div>
     </form>
 
     <ColorPicker />
-    <Success />
+    <Success request_type="custom" />
   </div>
 
   <script src="https://web3forms.com/client/script.js" async defer></script>
@@ -560,6 +578,16 @@ import ColorPicker from "../components/ColorPicker.astro";
         });
         formObject.image_url = uploadedImageUrlInput.value;
 
+        // Combine width and height into a single size field
+        const width = formObject.width;
+        const height = formObject.height;
+        if (width && height) {
+          formObject.size = `${width} x ${height}`;
+          // Remove individual width/height fields
+          delete formObject.width;
+          delete formObject.height;
+        }
+
         // --- Frontend Validation (including hCaptcha token check) ---
         const requiredFields = [
           "size",
@@ -588,8 +616,6 @@ import ColorPicker from "../components/ColorPicker.astro";
         }
 
         // --- CAPTURE HCAPTCHA TOKEN HERE ---
-        // The Web3Forms client script often makes `hcaptcha` available globally.
-        // It provides a function to get the token.
         let hcaptchaToken = "";
         if (typeof hcaptcha !== "undefined") {
           hcaptchaToken = hcaptcha.getResponse();
@@ -603,14 +629,9 @@ import ColorPicker from "../components/ColorPicker.astro";
           console.warn(
             "hCaptcha script not loaded or 'hcaptcha' global object not found."
           );
-          // Decide how to handle this: either make hCaptcha mandatory or optional.
-          // For now, if the error says it's mandatory, it must be present.
-          // If you intend for hCaptcha to be optional on the client, you'd remove this check.
         }
-        // --- END CAPTCHA TOKEN CAPTURE ---
 
         // --- STEP 1: Submit full form data to YOUR Cloudflare Worker for D2 storage ---
-        // This payload DOES NOT need the hCaptcha token, as your Worker isn't verifying it.
         const workerResponse = await fetch(
           `${WORKER_BASE_URL}/api/submit-form`,
           {

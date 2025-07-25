@@ -1,16 +1,16 @@
 ---
 import "@fontsource/montserrat/400.css";
 import logo from "../assets/logo.png";
-
-const { request_type } = Astro.props;
+import Button from "./Button.astro";
 ---
 
 <div id="modal">
   <div class="modal-content">
-    <h3>THANK YOU FOR YOUR INTEREST!</h3>
+    <span class="close" id="closeModal">&times;</span>
+    <h3>CUSTOMIZE YOUR RUG WITH US!</h3>
     <p>
-      Your {request_type} request has been received.<br />
-      We'll notify you soon via email.
+      Send us your custom request, our team will create a free digital rendering
+      and send you a quotation within 2 business days.
     </p>
     <p>
       If you have any questions or need assistance, feel free to reach out to
@@ -21,12 +21,11 @@ const { request_type } = Astro.props;
       MECHI SURSHAR
       <br />CARPET INDUSTRIES
     </p>
-    <a href="/">Back to Home</a>
+    <Button link="/custom" text="Request a custom sample" color="#1b1b1c" />
   </div>
 </div>
 
 <style>
-  /* Overlay styling */
   #modal {
     display: none;
     position: fixed;
@@ -38,11 +37,15 @@ const { request_type } = Astro.props;
     background: rgba(0, 0, 0, 0.4);
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
   }
+
   #modal.open {
     display: flex;
+    animation: fadeIn 0.4s ease-out forwards;
   }
-  /* Modal content (centered, limited width) */
+
   .modal-content {
     background: #fff;
     padding: 5rem 10rem;
@@ -55,16 +58,35 @@ const { request_type } = Astro.props;
     justify-content: center;
     align-items: center;
     text-align: center;
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #modal.open .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   .close {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 0.5rem;
+    right: 1rem;
     font-size: 1.5rem;
-    font-weight: bold;
     cursor: pointer;
-    color: #000;
+    color: #656569;
+    transition: color 0.2s ease;
+    z-index: 1001;
   }
+
   a {
     margin-top: 1.5rem;
     color: #656569;
@@ -90,5 +112,24 @@ const { request_type } = Astro.props;
     .modal-content {
       padding: 2rem;
     }
+
+    .close {
+      font-size: 1rem;
+    }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("modal");
+    const closeBtn = document.getElementById("closeModal");
+
+    // Close modal when clicking the X button
+    closeBtn?.addEventListener("click", function () {
+      modal?.classList.remove("open");
+      setTimeout(() => {
+        if (modal) modal.style.display = "none";
+      }, 300);
+    });
+  });
+</script>

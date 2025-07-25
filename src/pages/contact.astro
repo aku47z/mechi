@@ -119,12 +119,21 @@ import { Image } from "astro:assets";
               fill="#000"></path>
           </svg>
         </button>
+        <p
+          style=" border-top: 1px solid #000; padding-top: 1rem; padding-left:0.25rem;"
+        >
+          You can also
+          <a href="/custom" style="color: inherit;">request a custom sample</a>
+          or <a href="/request" style="color: inherit;"
+            >request on of our existing samples.</a
+          >
+        </p>
       </form>
     </div>
 
     <Image src={contact1} alt="Contact Us" id="desktop-img" />
   </div>
-  <Success />
+  <Success request_type="contact" />
 
   <script src="https://web3forms.com/client/script.js" async defer></script>
 </Layout>
